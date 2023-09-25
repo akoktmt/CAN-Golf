@@ -1,0 +1,73 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file    can.h
+ * @brief   This file contains all the function prototypes for
+ *          the can.c file
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __CAN_H__
+#define __CAN_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+
+extern CAN_HandleTypeDef hcan;
+
+/* USER CODE BEGIN Private defines */
+#define Board1 //Board0: Node 1, Board1: Node 2
+#define Node1_TX_ID 0x103
+#define Node2_TX_ID 0x301
+
+#define CAN_MAX_DATA_LENGTH         (0x08)
+
+typedef struct CAN_HandlerStruct
+{
+  CAN_HandleTypeDef *hcan;
+  uint16_t SenderID;
+  uint16_t FilterBank;
+  uint8_t FlagDataIT;
+} CAN_HandlerStruct;
+/* USER CODE END Private defines */
+
+void MX_CAN_Init(void);
+void CAN1_RX1_IRQHandler(void);
+/* USER CODE BEGIN Prototypes */
+uint8_t CAN_Init(CAN_HandlerStruct *Canhandler, CAN_HandleTypeDef *hcan,
+    uint16_t ID);
+uint32_t CAN_Config_Filtering(CAN_HandlerStruct *Canhandler, uint16_t NodeID);
+
+uint8_t CAN_Send_Test(CAN_HandlerStruct *Canhandler);
+uint8_t CAN_Send_Bytes(CAN_HandlerStruct *Canhandler, uint8_t *Data,
+    uint8_t Length);
+HAL_StatusTypeDef CAN_Receive_Bytes(CAN_HandleTypeDef *hcan, uint8_t *RcvData);
+HAL_StatusTypeDef CAN_Receive_Bytes1(CAN_HandleTypeDef *hcan, uint8_t *RcvData);
+void CAN_SEND(CAN_HandlerStruct *Canhandler);
+/* USER CODE END Prototypes */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __CAN_H__ */
+

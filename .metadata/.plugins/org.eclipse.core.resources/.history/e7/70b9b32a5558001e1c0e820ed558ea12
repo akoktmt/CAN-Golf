@@ -1,0 +1,366 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file    can.c
+ * @brief   This file provides code for the configuration
+ *          of the CAN instances.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "can.h"
+#include "stm32f1xx_hal_can.h"
+#include <stdio.h>
+#include "main.h"
+uint8_t CAN_TX_Buffer[8] = { 0, 0, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA };
+uint8_t CAN_RX_Buffer[8] = { 0 };
+uint8_t CAN_RX_Buffer1[8] = { 0 };
+uint16_t CAN_CNT = 0;
+uint32_t CAN_Mailbox;
+
+CAN_TxHeaderTypeDef CAN_Tx_Header;
+CAN_RxHeaderTypeDef CAN_Rx_Header;
+
+CAN_HandlerStruct mCAN;
+
+CAN_HandleTypeDef hcan;
+
+/* CAN init function */
+void MX_CAN_Init(void)
+{
+  hcan.Instance = CAN1;
+  hcan.Init.Prescaler = 4;
+  hcan.Init.Mode = CAN_MODE_LOOPBACK;
+  hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_12TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_5TQ;
+  hcan.Init.TimeTriggeredMode = DISABLE;
+  hcan.Init.AutoBusOff = DISABLE;
+  hcan.Init.AutoWakeUp = DISABLE;
+  hcan.Init.AutoRetransmission = DISABLE;
+  hcan.Init.ReceiveFifoLocked = DISABLE;
+  hcan.Init.TransmitFifoPriority = DISABLE;
+  if (HAL_CAN_Init(&hcan) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+#ifdef Board0
+  CAN_Init(&mCAN, &hcan, Node1_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node2_TX_ID, CAN_FILTER_FIFO0);
+  //CAN_Config_Filtering(&mCAN, Node2_TX_ID, CAN_FILTER_FIFO1);
+  printf("Set Node_1's ID!\r\n");
+#else
+  CAN_Init(&mCAN, &hcan, Node2_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node1_TX_ID, CAN_FILTER_FIFO0);
+  //CAN_Config_Filtering(&mCAN, Node1_TX_ID, CAN_FILTER_FIFO1);
+  printf("Set Node_2's ID!\r\n");
+#endif
+  // Activate the notification
+  if (HAL_CAN_ActivateNotification(&hcan,
+      CAN_IT_RX_FIFO0_FULL | CAN_IT_RX_FIFO0_MSG_PENDING
+          | CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_ERROR) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  // Start CAN communication
+  if (HAL_CAN_Start(&hcan) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
+{
+
+  GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+  if (canHandle->Instance == CAN1)
+  {
+#ifdef Board0
+    /* CAN1 clock enable */
+    __HAL_RCC_CAN1_CLK_ENABLE();
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    /**CAN GPIO Configuration
+     PB8     ------> CAN_RX
+     PB9     ------> CAN_TX
+     */
+    GPIO_InitStruct.Pin = GPIO_PIN_8;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    __HAL_AFIO_REMAP_CAN1_2();
+
+    /* CAN1 interrupt Init */
+      HAL_NVIC_SetPriority(USB_HP_CAN1_TX_IRQn, 0, 0);
+     HAL_NVIC_EnableIRQ(USB_HP_CAN1_TX_IRQn);
+     HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);
+     HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
+     HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
+     HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
+     HAL_NVIC_SetPriority(CAN1_SCE_IRQn, 0, 0);
+     HAL_NVIC_EnableIRQ(CAN1_SCE_IRQn);
+#else
+    /* CAN1 clock enable */
+    __HAL_RCC_CAN1_CLK_ENABLE();
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**CAN GPIO Configuration
+     PA11     ------> CAN_RX
+     PA12     ------> CAN_TX
+     */
+    GPIO_InitStruct.Pin = GPIO_PIN_11;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* CAN1 interrupt Init */
+    HAL_NVIC_SetPriority(USB_HP_CAN1_TX_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USB_HP_CAN1_TX_IRQn);
+    HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
+    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
+    HAL_NVIC_SetPriority(CAN1_SCE_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_SCE_IRQn);
+#endif
+  }
+}
+
+void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
+{
+#ifdef Board0
+  if (canHandle->Instance == CAN1)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_CAN1_CLK_DISABLE();
+
+    /**CAN GPIO Configuration
+     PB8     ------> CAN_RX
+     PB9     ------> CAN_TX
+     */
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
+
+    /* CAN1 interrupt Deinit */
+      HAL_NVIC_DisableIRQ(USB_HP_CAN1_TX_IRQn);
+      HAL_NVIC_DisableIRQ(USB_LP_CAN1_RX0_IRQn);
+      HAL_NVIC_DisableIRQ(CAN1_RX1_IRQn);
+      HAL_NVIC_DisableIRQ(CAN1_SCE_IRQn);
+  }
+#else
+  if (canHandle->Instance == CAN1)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_CAN1_CLK_DISABLE();
+
+    /**CAN GPIO Configuration
+     PA11     ------> CAN_RX
+     PA12     ------> CAN_TX
+     */
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_11 | GPIO_PIN_12);
+
+    /* CAN1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USB_HP_CAN1_TX_IRQn);
+    HAL_NVIC_DisableIRQ(USB_LP_CAN1_RX0_IRQn);
+    HAL_NVIC_DisableIRQ(CAN1_RX1_IRQn);
+    HAL_NVIC_DisableIRQ(CAN1_SCE_IRQn);
+  }
+#endif
+}
+
+uint8_t CAN_Init(CAN_HandlerStruct *Canhandler, CAN_HandleTypeDef *hcan,
+    uint16_t ID)
+{
+  Canhandler->Canhandler = hcan;
+  Canhandler->SenderID = ID;
+  Canhandler->FilterBank = 0;
+  Canhandler->FlagDataIT = 0;
+  Canhandler->FlagDataIT1 = 0;
+  return HAL_OK;
+}
+
+uint32_t CAN_Config_Filtering(CAN_HandlerStruct *Canhandler, uint16_t NodeID,
+    uint32_t mFIFO)
+{
+  CAN_FilterTypeDef canfilterconfig;
+
+  canfilterconfig.FilterActivation = ENABLE;
+  canfilterconfig.FilterBank = 0; // which filter bank to use from the assigned ones
+  canfilterconfig.FilterFIFOAssignment = mFIFO; //CAN_FILTER_FIFO1;
+#ifdef Board0
+  canfilterconfig.FilterIdHigh = 0x0000; //Node2_TX_ID << 5;
+  canfilterconfig.FilterIdLow = 0x0000;
+  canfilterconfig.FilterMaskIdHigh = 0x0000; //Node2_TX_ID << 5;
+#else
+  canfilterconfig.FilterIdHigh = 0x0000; //Node1_TX_ID << 5;
+  canfilterconfig.FilterIdLow = 0x0000;
+  canfilterconfig.FilterMaskIdHigh = 0x0000; //Node1_TX_ID << 5;
+#endif
+  canfilterconfig.FilterMaskIdLow = 0x0000;
+  canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  if (HAL_CAN_ConfigFilter(Canhandler->Canhandler, &canfilterconfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  return HAL_OK;
+}
+
+uint8_t CAN_Send_Test(CAN_HandlerStruct *Canhandler)
+{
+  CAN_Tx_Header.DLC = 8;  // data length
+  CAN_Tx_Header.IDE = CAN_ID_STD;
+  CAN_Tx_Header.RTR = CAN_RTR_DATA;
+#ifdef Board0
+  CAN_Tx_Header.StdId = Node1_TX_ID;  // ID
+#else
+  CAN_Tx_Header.StdId = Node2_TX_ID;  // ID
+#endif
+  CAN_CNT++;
+  CAN_TX_Buffer[0] = CAN_CNT >> 8;
+  CAN_TX_Buffer[1] = CAN_CNT & 0xFF;
+  if (HAL_CAN_AddTxMessage(Canhandler->Canhandler, &CAN_Tx_Header,
+      CAN_TX_Buffer, &CAN_Mailbox) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  return HAL_OK;
+}
+
+//void CAN_SEND(CAN_HandlerStruct *Canhandler)
+//{
+//  CAN_TxHeaderTypeDef CAN;
+//  uint32_t Txmailbox;
+//  uint8_t message[5]={1,2,3,4,5};
+//  CAN.DLC = 8;  // data length
+//  CAN.IDE = CAN_ID_STD;
+//  CAN.RTR = CAN_RTR_DATA;
+//  CAN.StdId = 0x65D;
+//  if( HAL_CAN_AddTxMessage(Canhandler->hcan, &CAN_Tx_Header,CAN_TX_Buffer,&CAN_Mailbox)!=HAL_OK)
+//     {
+//       Error_Handler();
+//     }
+//  while(HAL_CAN_IsTxMessagePending(Canhandler->hcan,Txmailbox));
+//}
+uint8_t CAN_Send_Bytes(CAN_HandlerStruct *Canhandler, uint8_t *Data,
+    uint8_t Length)
+{
+  if (Length == 0 || Length > 8)
+    return 0;
+  else
+  {
+    CAN_Tx_Header.DLC = 8;  // data length
+    CAN_Tx_Header.IDE = CAN_ID_STD;
+    CAN_Tx_Header.RTR = CAN_RTR_DATA;
+
+#ifdef Board0
+    CAN_Tx_Header.StdId = Node1_TX_ID;  // ID
+#else
+    CAN_Tx_Header.StdId = Node2_TX_ID;  // ID
+#endif
+
+    for (uint8_t index = 0; index < 8; index++)
+    {
+      CAN_TX_Buffer[index] = Data[index];
+    }
+    HAL_CAN_AddTxMessage(Canhandler->Canhandler, &CAN_Tx_Header, CAN_TX_Buffer,
+        &CAN_Mailbox);
+  }
+  return Length;
+}
+
+HAL_StatusTypeDef CAN_Receive_Bytes(CAN_HandleTypeDef *hcan, uint8_t *RcvData)
+{
+  HAL_StatusTypeDef Status;
+  CAN_RxHeaderTypeDef Can_Header = { 0 };
+  uint32_t FreeLevel;
+  FreeLevel = HAL_CAN_GetRxFifoFillLevel(hcan, CAN_FILTER_FIFO0);
+  while (FreeLevel > 0)
+  {
+    Status = HAL_CAN_GetRxMessage(hcan, CAN_FILTER_FIFO0, &Can_Header,
+        (uint8_t*) RcvData);
+    if (Status != HAL_OK)
+      return Status;
+    for (uint8_t i = 0; i < Can_Header.DLC; ++i)
+    {
+      printf("%d ", RcvData[i]);
+    }
+    printf("\r\n");
+    FreeLevel = HAL_CAN_GetRxFifoFillLevel(hcan, CAN_FILTER_FIFO0);
+  }
+  return HAL_OK;
+}
+void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef *hcan)
+{
+  printf("full\r\n");
+  if (HAL_CAN_DeactivateNotification(hcan,
+  CAN_IT_RX_FIFO0_FULL | CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
+  {
+    Error_Handler();
+  }
+#ifdef Board0
+  CAN_Init(&mCAN, hcan, Node1_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node2_TX_ID, CAN_FILTER_FIFO1);
+#else
+  CAN_Init(&mCAN, hcan, Node2_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node1_TX_ID, CAN_FILTER_FIFO1);
+#endif
+  if (HAL_CAN_ActivateNotification(hcan,
+  CAN_IT_RX_FIFO1_FULL | CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+void HAL_CAN_RxFifo1FullCallback(CAN_HandleTypeDef *hcan)
+{
+  printf("full\r\n");
+  if (HAL_CAN_DeactivateNotification(hcan,
+  CAN_IT_RX_FIFO1_FULL | CAN_IT_RX_FIFO1_MSG_PENDING) != HAL_OK)
+  {
+    Error_Handler();
+  }
+#ifdef Board0
+  CAN_Init(&mCAN, hcan, Node1_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node2_TX_ID, CAN_FILTER_FIFO0);
+#else
+  CAN_Init(&mCAN, hcan, Node2_TX_ID);
+  CAN_Config_Filtering(&mCAN, Node1_TX_ID, CAN_FILTER_FIFO0);
+#endif
+  if (HAL_CAN_ActivateNotification(hcan,
+  CAN_IT_RX_FIFO0_FULL | CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+  HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO1, &CAN_Rx_Header, CAN_RX_Buffer1);
+  mCAN.FlagDataIT1 = 1;
+}
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+  HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &CAN_Rx_Header, CAN_RX_Buffer);
+  mCAN.FlagDataIT = 1;
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;CAN_Goft/CANlibrary/CAN_Config&apos; to &apos;CAN_Config.h&apos;" description="Rename resource &apos;CAN_Config&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="CANlibrary/CAN_Config" name="CAN_Config.h" stamp="1695437390019" updateReferences="true"/>
+</session>
