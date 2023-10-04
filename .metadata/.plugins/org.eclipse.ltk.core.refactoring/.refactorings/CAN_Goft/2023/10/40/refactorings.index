@@ -1,2 +1,5 @@
 1696303286968	Rename resource 'CAN_Config.h'
 1696303355674	Rename resource 'CAN_Buffer'
+1696426951358	Rename resource 'CAN_Flag.c'
+1696427523014	Rename resource 'canframe.c'
+1696427536382	Rename resource 'canframe.h'

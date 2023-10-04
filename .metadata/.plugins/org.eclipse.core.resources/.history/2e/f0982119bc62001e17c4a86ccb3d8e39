@@ -1,0 +1,24 @@
+/*
+ * CAN_Flag.c
+ *
+ *  Created on: Oct 4, 2023
+ *      Author: win 10
+ */
+#include "stm32f1xx_hal_can.h"
+#include "main.h"
+uint32_t CAN_Config_filtering(void) {
+CAN_FilterTypeDef Can_filter_init;
+Can_filter_init.FilterActivation = ENABLE;
+Can_filter_init.FilterBank = 0;
+Can_filter_init.FilterFIFOAssignment = CAN_RX_FIFO0;
+Can_filter_init.FilterIdHigh = 0x0000;
+Can_filter_init.FilterIdLow = 0x0000;
+Can_filter_init.FilterMaskIdHigh = 0x0000;
+Can_filter_init.FilterMaskIdLow = 0x0000;
+Can_filter_init.FilterMode = CAN_FILTERMODE_IDMASK;
+Can_filter_init.FilterScale = CAN_FILTERSCALE_32BIT;
+if (HAL_CAN_ConfigFilter(&hcan, &Can_filter_init) != HAL_OK) {
+	Error_Handler();
+}
+return HAL_OK;
+}

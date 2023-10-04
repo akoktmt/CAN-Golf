@@ -1,0 +1,4 @@
+../CANlibrary/CAN_Init.c:9:6:CANBufferHandleStruct_Init	96	static
+../CANlibrary/CAN_Init.c:25:6:FlagsDataHandle_Init	16	static
+../CANlibrary/CAN_Init.c:38:6:CAN_TXHeaderConfig	16	static
+../CANlibrary/CAN_Init.c:44:6:NodeBufferHandle_Init	16	static

@@ -17,11 +17,11 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <CAN_OSI.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "canframe.h"
 #include "CAN_Flag.h"
 /* USER CODE END Includes */
 

@@ -5,16 +5,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../CANlibrary/CAN_Flag.c \
-../CANlibrary/canframe.c 
+../CANlibrary/CAN_Init.c \
+../CANlibrary/CAN_OSI.c \
+../CANlibrary/CAN_Process.c 
 
 OBJS += \
-./CANlibrary/CAN_Flag.o \
-./CANlibrary/canframe.o 
+./CANlibrary/CAN_Init.o \
+./CANlibrary/CAN_OSI.o \
+./CANlibrary/CAN_Process.o 
 
 C_DEPS += \
-./CANlibrary/CAN_Flag.d \
-./CANlibrary/canframe.d 
+./CANlibrary/CAN_Init.d \
+./CANlibrary/CAN_OSI.d \
+./CANlibrary/CAN_Process.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -24,7 +27,7 @@ CANlibrary/%.o CANlibrary/%.su CANlibrary/%.cyclo: ../CANlibrary/%.c CANlibrary/
 clean: clean-CANlibrary
 
 clean-CANlibrary:
-	-$(RM) ./CANlibrary/CAN_Flag.cyclo ./CANlibrary/CAN_Flag.d ./CANlibrary/CAN_Flag.o ./CANlibrary/CAN_Flag.su ./CANlibrary/canframe.cyclo ./CANlibrary/canframe.d ./CANlibrary/canframe.o ./CANlibrary/canframe.su
+	-$(RM) ./CANlibrary/CAN_Init.cyclo ./CANlibrary/CAN_Init.d ./CANlibrary/CAN_Init.o ./CANlibrary/CAN_Init.su ./CANlibrary/CAN_OSI.cyclo ./CANlibrary/CAN_OSI.d ./CANlibrary/CAN_OSI.o ./CANlibrary/CAN_OSI.su ./CANlibrary/CAN_Process.cyclo ./CANlibrary/CAN_Process.d ./CANlibrary/CAN_Process.o ./CANlibrary/CAN_Process.su
 
 .PHONY: clean-CANlibrary
 

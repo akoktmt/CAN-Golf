@@ -1,36 +1,10 @@
-20:24:28 **** Incremental Build of configuration Debug for project CAN_Goft ****
+21:08:28 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:115:11: warning: unused variable 'mess' [-Wunused-variable]
-  115 |   uint8_t mess[30]={0};
-      |           ^~~~
-../Core/Src/main.c:114:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
-  114 |   char Data[64]={0};
-      |        ^~~~
-../Core/Src/main.c:113:11: warning: unused variable 'DataRec' [-Wunused-variable]
-  113 |   uint8_t DataRec[16];
-      |           ^~~~~~~
-../Core/Src/main.c:108:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
-  108 |   FlagsDataHandle FlagHandle;
-      |                   ^~~~~~~~~~
-../Core/Src/main.c:101:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
-  101 |   CANConfigIDTxtypedef pIDtype;
-      |                        ^~~~~~~
-../Core/Src/main.c:100:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
-  100 |   uint32_t Txmailbox;
-      |            ^~~~~~~~~
-arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: CAN_Goft.elf
- 
 arm-none-eabi-size   CAN_Goft.elf 
-arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  11112	     20	   1684	  12816	   3210	CAN_Goft.elf
+  11108	     20	   1684	  12812	   320c	CAN_Goft.elf
 Finished building: default.size.stdout
  
-Finished building: CAN_Goft.list
- 
 
-20:24:29 Build Finished. 0 errors, 6 warnings. (took 1s.341ms)
+21:08:29 Build Finished. 0 errors, 0 warnings. (took 352ms)
 

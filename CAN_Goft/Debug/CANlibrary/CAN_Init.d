@@ -1,4 +1,4 @@
-CANlibrary/canframe.o: ../CANlibrary/canframe.c ../CANlibrary/canframe.h \
+CANlibrary/CAN_Init.o: ../CANlibrary/CAN_Init.c ../CANlibrary/CAN_OSI.h \
  ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -23,8 +23,8 @@ CANlibrary/canframe.o: ../CANlibrary/canframe.c ../CANlibrary/canframe.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../CANlibrary/CAN_Flag.h ../CRC/CRC.h
-../CANlibrary/canframe.h:
+ ../CANlibrary/CAN_Flag.h
+../CANlibrary/CAN_OSI.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -51,4 +51,3 @@ CANlibrary/canframe.o: ../CANlibrary/canframe.c ../CANlibrary/canframe.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../CANlibrary/CAN_Flag.h:
-../CRC/CRC.h:
