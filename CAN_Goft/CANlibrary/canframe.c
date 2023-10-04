@@ -6,17 +6,21 @@
 #include "stm32f1xx_hal_can.h"
 #include "CRC.h"
 extern CAN_HandleTypeDef hcan;
-NodeBufferHandle NodeID[Node_Number] = { 0 };
-void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer) {
-	TxBuffer->Buffer_Index = 0;
-	TxBuffer->SenderID = 0;
-	TxBuffer->RecvID = 0;
-	TxBuffer->FrameType_Index = SET_UP_FRAME;
-	TxBuffer->PacketDataLength = 0;
-	TxBuffer->CRCValue = 0;
-	memset(TxBuffer->NetworkBuffer, 0, sizeof(TxBuffer->NetworkBuffer));
-	memset(TxBuffer->Buffer, 0x55, sizeof(TxBuffer->Buffer));
-	memset(TxBuffer->StoreData, 0, sizeof(TxBuffer->StoreData));
+void CANBufferHandleStruct_Init(CANBufferHandleStruct *Buffer) {
+	NodeBufferHandle defaultNodeHandle = {0};
+	Buffer->Buffer_Index = 0;
+	Buffer->SenderID = 0;
+	Buffer->RecvID = 0;
+	Buffer->FrameType_Index = SET_UP_FRAME;
+	Buffer->PacketDataLength = 0;
+	Buffer->CRCValue = 0;
+	Buffer->NumberOfFrame=0;
+	memset(Buffer->NetworkBuffer, 0, sizeof(Buffer->NetworkBuffer));
+	memset(Buffer->Buffer, 0x55, sizeof(Buffer->Buffer));
+	memset(Buffer->StoreData, 0, sizeof(Buffer->StoreData));
+	for (int i = 0; i < 16; i++) {
+		Buffer->NodeHandle[i] = defaultNodeHandle;
+	}
 }
 void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
 	FlagInit->Bits.Flag_bit_0 = 0;
@@ -28,6 +32,7 @@ void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
 	FlagInit->Bits.Flag_bit_6 = 0;
 	FlagInit->Bits.Flag_bit_7 = 0;
 	FlagInit->FlagDuplicate=0;
+	memset(FlagInit->FlagFrameFull,0,sizeof(FlagInit->FlagFrameFull));
 }
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
 	Txheader->DLC = 8;
@@ -43,6 +48,7 @@ void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer) {
 	memset(NodeBuffer->NodeBuffer, 0, sizeof(NodeBuffer->NodeBuffer));
 }
 uint16_t CAN_Send_Response(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
+
 		CAN_TxHeaderTypeDef Txheader) {
 	uint8_t OpcodeData[8] = { Opcode, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 };
 	CAN_TXHeaderConfig(&Txheader, StdId);
@@ -53,6 +59,12 @@ uint16_t CAN_Send_Response(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
 	while (HAL_CAN_IsTxMessagePending(&hcan, Txmailbox))
 		;
 	return HAL_OK;
+}
+void processFrame(FlagsDataHandle *FlagHandle,uint8_t ID,CANBufferHandleStruct *RxBuffer,uint8_t FrameType,uint8_t* Data) {
+    if (RxBuffer->NodeHandle[ID].FrameType == FrameType && FlagHandle->FlagFrameFull[FrameType] == 0) {
+    	memcpy(RxBuffer->NodeHandle[ID].NodeBuffer[RxBuffer->NodeHandle[ID].FrameType], Data, CAN_MAX_DATA);
+        FlagHandle->FlagFrameFull[FrameType]= 1;
+    }
 }
 
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
@@ -168,91 +180,75 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 
 	StdID = RxHeader->StdId;
 	ID = (StdID >> 3) & 15;
-	NodeID[ID].FrameType = StdID & 7;
-
-	if (NodeID[ID].FrameType == SET_UP_FRAME&&NodeID[ID].DuplicateFrame!=1) {
-		NodeID[ID].DuplicateFrame=1;
-		NodeID[ID].PacketLength = Data[6];
-		NodeID[ID].CRCValue = Data[7];
-		if (NodeID[ID].PacketLength % 8 == 0) {
-			NodeID[ID].NumberOfFrame = (NodeID[ID].PacketLength / 8);
+	RxBuffer->NodeHandle[ID].FrameType = StdID & 7;
+	if (RxBuffer->NodeHandle[ID].FrameType == SET_UP_FRAME&&RxBuffer->NodeHandle[ID].DuplicateFrame!=1) {
+		RxBuffer->NodeHandle[ID].DuplicateFrame=1;
+		RxBuffer->NodeHandle[ID].PacketLength = Data[6];
+		RxBuffer->NodeHandle[ID].CRCValue = Data[7];
+		if (RxBuffer->NodeHandle[ID].PacketLength % 8 == 0) {
+			RxBuffer->NodeHandle[ID].NumberOfFrame = (RxBuffer->NodeHandle[ID].PacketLength / 8);
 		} else {
-			NodeID[ID].NumberOfFrame = (NodeID[ID].PacketLength / 8) + 1;
+			RxBuffer->NodeHandle[ID].NumberOfFrame = (RxBuffer->NodeHandle[ID].PacketLength / 8) + 1;
 		}
 	}
 	else
 	{
-		//FlagFrameError
+		if(RxBuffer->NodeHandle[ID].FrameType == SET_UP_FRAME)
+		{
+			//FlagFrameError
+		}
 	}
 	switch (ID) {
 	case OBSTALCE8:
-		if (NodeID[ID].FrameType == SET_UP_FRAME
-				&& FlagHandle->Bits.Flag_bit_0 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_0 = 1;
+		RxBuffer->NodeHandle[ID].NodeIndex++;
+		for(FrameType=0; FrameType<RxBuffer->NodeHandle[ID].NumberOfFrame;FrameType++)
+		{
+			processFrame(FlagHandle, ID, RxBuffer,FrameType, Data);
 		}
-		if (NodeID[ID].FrameType == FIRST_FRAME
-				&& FlagHandle->Bits.Flag_bit_1 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_1 = 1;
-		}
-		if (NodeID[ID].FrameType == SECOND_FRAME
-				&& FlagHandle->Bits.Flag_bit_2 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_2 = 1;
-		}
-		if (NodeID[ID].FrameType == THIRD_FRAME
-				&& FlagHandle->Bits.Flag_bit_3 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_3 = 1;
-		}
-		if (NodeID[ID].FrameType == FOURTH_FRAME
-				&& FlagHandle->Bits.Flag_bit_4 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_4 = 1;
-		}
-		if (NodeID[ID].FrameType == FIFTH_FRAME
-				&& FlagHandle->Bits.Flag_bit_5 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_5 = 1;
-		}
-		if (NodeID[ID].FrameType == SIX_FRAME
-				&& FlagHandle->Bits.Flag_bit_6 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_6 = 1;
-		}
-		if (NodeID[ID].FrameType == SEVEN_FRAME
-				&& FlagHandle->Bits.Flag_bit_7 == 0) {
-			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
-			FlagHandle->Bits.Flag_bit_7 = 1;
-		}
+
 	break;
-//	case OBSTALCE7:
-//		break;
-//	case OBSTALCE6:
-//		break;
-//	case OBSTALCE5:
-//		break;
-//	case OBSTALCE4:
-//		break;
-//	case OBSTALCE3:
-//		break;
-//	case OBSTALCE2:
-//		break;
-//	case OBSTALCE1:
-//		break;
-//	case POWER:
-//		break;
-//	case STEERING:
-//		break;
-//	case MASTER:
-//		break;
-//	case LIGHT_GPS:
-//		break;
-//	case ENGINE_CONTROL:
-//		break;
-//	case ALL_NODE:
-//		break;
+	case OBSTALCE7:
+		for(FrameType=0; FrameType<SIZE_FRAME_DATA;FrameType++)
+				{
+					processFrame(FlagHandle, ID, RxBuffer,FrameType, Data);
+				}
+		break;
+	case OBSTALCE6:
+
+		break;
+	case OBSTALCE5:
+
+		break;
+	case OBSTALCE4:
+
+		break;
+	case OBSTALCE3:
+
+		break;
+	case OBSTALCE2:
+
+		break;
+	case OBSTALCE1:
+
+		break;
+	case POWER:
+
+		break;
+	case STEERING:
+
+		break;
+	case MASTER:
+
+		break;
+	case LIGHT_GPS:
+
+		break;
+	case ENGINE_CONTROL:
+
+		break;
+	case ALL_NODE:
+
+		break;
 
 }
 	return HAL_OK;

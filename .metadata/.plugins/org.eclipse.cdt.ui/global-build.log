@@ -1,36 +1,9 @@
-08:40:19 **** Incremental Build of configuration Debug for project CAN_Goft ****
+13:39:54 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc "../CANlibrary/canframe.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/canframe.d" -MT"CANlibrary/canframe.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/canframe.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:116:11: warning: unused variable 'mess' [-Wunused-variable]
-  116 |   uint8_t mess[30]={0};
-      |           ^~~~
-../Core/Src/main.c:115:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
-  115 |   char Data[64]={0};
-      |        ^~~~
-../Core/Src/main.c:114:11: warning: unused variable 'DataRec' [-Wunused-variable]
-  114 |   uint8_t DataRec[16];
-      |           ^~~~~~~
-../Core/Src/main.c:109:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
-  109 |   FlagsDataHandle FlagHandle;
-      |                   ^~~~~~~~~~
-../Core/Src/main.c:108:19: warning: unused variable 'FlagRec' [-Wunused-variable]
-  108 |   FlagRecDataEnum FlagRec=0;
-      |                   ^~~~~~~
-../Core/Src/main.c:100:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
-  100 |   CANConfigIDTxtypedef pIDtype;
-      |                        ^~~~~~~
-../Core/Src/main.c:99:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
-   99 |   uint32_t Txmailbox;
-      |            ^~~~~~~~~
-../CANlibrary/canframe.c: In function 'CAN_Receive_DataLink':
-../CANlibrary/canframe.c:166:17: warning: unused variable 'FrameType' [-Wunused-variable]
-  166 |         uint8_t FrameType = 0;
-      |                 ^~~~~~~~~
 ../CANlibrary/canframe.c: In function 'CAN_Receive_App':
-../CANlibrary/canframe.c:261:17: warning: unused variable 'Flag' [-Wunused-variable]
-  261 | FlagsDataHandle Flag;
+../CANlibrary/canframe.c:253:17: warning: unused variable 'Flag' [-Wunused-variable]
+  253 | FlagsDataHandle Flag;
       |                 ^~~~
 arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: CAN_Goft.elf
@@ -38,8 +11,145 @@ Finished building target: CAN_Goft.elf
 arm-none-eabi-size   CAN_Goft.elf 
 arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  10476	     20	   2852	  13348	   3424	CAN_Goft.elf
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
 Finished building: default.size.stdout
  
 Finished building: CAN_Goft.list
+ 
+14:03:22 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../CANlibrary/canframe.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/canframe.d" -MT"CANlibrary/canframe.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/canframe.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:115:11: warning: unused variable 'mess' [-Wunused-variable]
+  115 |   uint8_t mess[30]={0};
+      |           ^~~~
+../Core/Src/main.c:114:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
+  114 |   char Data[64]={0};
+      |        ^~~~
+../Core/Src/main.c:113:11: warning: unused variable 'DataRec' [-Wunused-variable]
+  113 |   uint8_t DataRec[16];
+      |           ^~~~~~~
+../Core/Src/main.c:108:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
+  108 |   FlagsDataHandle FlagHandle;
+      |                   ^~~~~~~~~~
+../Core/Src/main.c:107:19: warning: unused variable 'FlagRec' [-Wunused-variable]
+  107 |   FlagRecDataEnum FlagRec=0;
+      |                   ^~~~~~~
+../Core/Src/main.c:100:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
+  100 |   CANConfigIDTxtypedef pIDtype;
+      |                        ^~~~~~~
+../Core/Src/main.c:99:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
+   99 |   uint32_t Txmailbox;
+      |            ^~~~~~~~~
+../CANlibrary/canframe.c: In function 'CAN_Receive_App':
+../CANlibrary/canframe.c:254:17: warning: unused variable 'Flag' [-Wunused-variable]
+  254 | FlagsDataHandle Flag;
+      |                 ^~~~
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+14:03:54 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:138:42: warning: pointer targets in passing argument 2 of 'CAN_Send_Physical_Send' differ in signedness [-Wpointer-sign]
+  138 |          CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
+      |                                          ^~~~
+      |                                          |
+      |                                          char *
+In file included from ../Core/Src/main.c:24:
+../CANlibrary/canframe.h:141:74: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+  141 | uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+      |                                                                 ~~~~~~~~~^~~~
+../Core/Src/main.c:115:11: warning: unused variable 'mess' [-Wunused-variable]
+  115 |   uint8_t mess[30]={0};
+      |           ^~~~
+../Core/Src/main.c:113:11: warning: unused variable 'DataRec' [-Wunused-variable]
+  113 |   uint8_t DataRec[16];
+      |           ^~~~~~~
+../Core/Src/main.c:108:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
+  108 |   FlagsDataHandle FlagHandle;
+      |                   ^~~~~~~~~~
+../Core/Src/main.c:107:19: warning: unused variable 'FlagRec' [-Wunused-variable]
+  107 |   FlagRecDataEnum FlagRec=0;
+      |                   ^~~~~~~
+../Core/Src/main.c:106:23: warning: unused variable 'RxHeader' [-Wunused-variable]
+  106 |   CAN_RxHeaderTypeDef RxHeader;
+      |                       ^~~~~~~~
+../Core/Src/main.c:104:25: warning: unused variable 'RxBuffer' [-Wunused-variable]
+  104 |   CANBufferHandleStruct RxBuffer;
+      |                         ^~~~~~~~
+../Core/Src/main.c:138:10: warning: 'Txmailbox' is used uninitialized [-Wuninitialized]
+  138 |          CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10256	     20	   1684	  11960	   2eb8	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+14:09:23 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:115:11: warning: unused variable 'mess' [-Wunused-variable]
+  115 |   uint8_t mess[30]={0};
+      |           ^~~~
+../Core/Src/main.c:114:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
+  114 |   char Data[64]={0};
+      |        ^~~~
+../Core/Src/main.c:113:11: warning: unused variable 'DataRec' [-Wunused-variable]
+  113 |   uint8_t DataRec[16];
+      |           ^~~~~~~
+../Core/Src/main.c:108:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
+  108 |   FlagsDataHandle FlagHandle;
+      |                   ^~~~~~~~~~
+../Core/Src/main.c:107:19: warning: unused variable 'FlagRec' [-Wunused-variable]
+  107 |   FlagRecDataEnum FlagRec=0;
+      |                   ^~~~~~~
+../Core/Src/main.c:100:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
+  100 |   CANConfigIDTxtypedef pIDtype;
+      |                        ^~~~~~~
+../Core/Src/main.c:99:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
+   99 |   uint32_t Txmailbox;
+      |            ^~~~~~~~~
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+14:11:02 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+14:11:52 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
+Finished building: default.size.stdout
  

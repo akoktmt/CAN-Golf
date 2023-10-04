@@ -1,0 +1,43 @@
+/*
+ * CAN_INIT.c
+ *
+ *  Created on: Oct 4, 2023
+ *      Author: win 10
+ */
+#include "CAN_INIT.h"
+void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer) {
+	TxBuffer->Buffer_Index = 0;
+	TxBuffer->SenderID = 0;
+	TxBuffer->RecvID = 0;
+	TxBuffer->FrameType_Index = SET_UP_FRAME;
+	TxBuffer->PacketDataLength = 0;
+	TxBuffer->CRCValue = 0;
+	memset(TxBuffer->NetworkBuffer, 0, sizeof(TxBuffer->NetworkBuffer));
+	memset(TxBuffer->Buffer, 0x55, sizeof(TxBuffer->Buffer));
+	memset(TxBuffer->StoreData, 0, sizeof(TxBuffer->StoreData));
+}
+void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
+	FlagInit->Bits.Flag_bit_0 = 0;
+	FlagInit->Bits.Flag_bit_1 = 0;
+	FlagInit->Bits.Flag_bit_2 = 0;
+	FlagInit->Bits.Flag_bit_3 = 0;
+	FlagInit->Bits.Flag_bit_4 = 0;
+	FlagInit->Bits.Flag_bit_5 = 0;
+	FlagInit->Bits.Flag_bit_6 = 0;
+	FlagInit->Bits.Flag_bit_7 = 0;
+	FlagInit->FlagDuplicate=0;
+}
+void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
+	Txheader->DLC = 8;
+	Txheader->RTR = CAN_RTR_DATA;
+	Txheader->IDE = CAN_ID_STD;
+	Txheader->StdId = StdId;
+}
+void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer) {
+	NodeBuffer->NodeIndex = 0;
+	NodeBuffer->CRCValue = 0;
+	NodeBuffer->FrameType = 0;
+	NodeBuffer->NumberOfFlags = 0;
+	memset(NodeBuffer->NodeBuffer, 0, sizeof(NodeBuffer->NodeBuffer));
+}
+

@@ -1,48 +1,10 @@
-08:40:19 **** Incremental Build of configuration Debug for project CAN_Goft ****
+14:11:52 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../CANlibrary/canframe.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/canframe.d" -MT"CANlibrary/canframe.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/canframe.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:116:11: warning: unused variable 'mess' [-Wunused-variable]
-  116 |   uint8_t mess[30]={0};
-      |           ^~~~
-../Core/Src/main.c:115:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
-  115 |   char Data[64]={0};
-      |        ^~~~
-../Core/Src/main.c:114:11: warning: unused variable 'DataRec' [-Wunused-variable]
-  114 |   uint8_t DataRec[16];
-      |           ^~~~~~~
-../Core/Src/main.c:109:19: warning: unused variable 'FlagHandle' [-Wunused-variable]
-  109 |   FlagsDataHandle FlagHandle;
-      |                   ^~~~~~~~~~
-../Core/Src/main.c:108:19: warning: unused variable 'FlagRec' [-Wunused-variable]
-  108 |   FlagRecDataEnum FlagRec=0;
-      |                   ^~~~~~~
-../Core/Src/main.c:100:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
-  100 |   CANConfigIDTxtypedef pIDtype;
-      |                        ^~~~~~~
-../Core/Src/main.c:99:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
-   99 |   uint32_t Txmailbox;
-      |            ^~~~~~~~~
-../CANlibrary/canframe.c: In function 'CAN_Receive_DataLink':
-../CANlibrary/canframe.c:166:17: warning: unused variable 'FrameType' [-Wunused-variable]
-  166 |         uint8_t FrameType = 0;
-      |                 ^~~~~~~~~
-../CANlibrary/canframe.c: In function 'CAN_Receive_App':
-../CANlibrary/canframe.c:261:17: warning: unused variable 'Flag' [-Wunused-variable]
-  261 | FlagsDataHandle Flag;
-      |                 ^~~~
-arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: CAN_Goft.elf
- 
 arm-none-eabi-size   CAN_Goft.elf 
-arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  10476	     20	   2852	  13348	   3424	CAN_Goft.elf
+  10168	     20	   1684	  11872	   2e60	CAN_Goft.elf
 Finished building: default.size.stdout
  
-Finished building: CAN_Goft.list
- 
 
-08:40:21 Build Finished. 0 errors, 9 warnings. (took 2s.139ms)
+14:11:52 Build Finished. 0 errors, 0 warnings. (took 280ms)
 
