@@ -5,12 +5,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../CANlibrary/CAN_Flag.c \
 ../CANlibrary/canframe.c 
 
 OBJS += \
+./CANlibrary/CAN_Flag.o \
 ./CANlibrary/canframe.o 
 
 C_DEPS += \
+./CANlibrary/CAN_Flag.d \
 ./CANlibrary/canframe.d 
 
 
@@ -21,7 +24,7 @@ CANlibrary/%.o CANlibrary/%.su CANlibrary/%.cyclo: ../CANlibrary/%.c CANlibrary/
 clean: clean-CANlibrary
 
 clean-CANlibrary:
-	-$(RM) ./CANlibrary/canframe.cyclo ./CANlibrary/canframe.d ./CANlibrary/canframe.o ./CANlibrary/canframe.su
+	-$(RM) ./CANlibrary/CAN_Flag.cyclo ./CANlibrary/CAN_Flag.d ./CANlibrary/CAN_Flag.o ./CANlibrary/CAN_Flag.su ./CANlibrary/canframe.cyclo ./CANlibrary/canframe.d ./CANlibrary/canframe.o ./CANlibrary/canframe.su
 
 .PHONY: clean-CANlibrary
 

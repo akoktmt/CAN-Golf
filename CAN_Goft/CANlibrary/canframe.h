@@ -1,4 +1,5 @@
 #include "main.h"
+#include "CAN_Flag.h"
 #ifndef CAN_MUTIFRAME_H
 #define CAN_MUTIFRAME_H
 #define TIMEOUT_MS 5000
@@ -93,6 +94,7 @@ typedef struct {
 typedef struct  {
 	uint8_t FlagDuplicate;
 	uint8_t FlagFrameFull[8];
+	uint8_t SumOfFlag;
     union {
         struct {
         	uint8_t Flag_bit_0:1;
@@ -114,8 +116,7 @@ typedef struct  {
 //uint16_t CAN_RECEIVE_ACK(CAN_HandlerStruct* canhandler);
 //uint8_t CAN_Init(CAN_HandlerStruct* canhandler, CAN_HandleTypeDef* hcan, uint16_t ID);
 uint32_t CAN_Config_filtering(void);
-uint16_t CAN_Send_Opcode(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
-		CAN_TxHeaderTypeDef Txheader);
+uint16_t CAN_Send_Response(uint8_t ID,uint8_t Opcode,uint8_t FrameType);
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength);
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
@@ -124,7 +125,7 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype, uint32_t Txmailbox);
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagsDataHandle *FlagHandle,CANBufferHandleStruct *RxBuffer);
+		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecDataEnum *FlagRecHandle);
 uint8_t CAN_Receive_App(uint8_t *Data);
 uint8_t CAN_Receive_NetWork(uint8_t *Data);
 

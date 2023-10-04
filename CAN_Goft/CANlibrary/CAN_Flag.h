@@ -8,6 +8,23 @@
 #ifndef CAN_FLAG_H_
 #define CAN_FLAG_H_
 
+#define ACK 0b00000001
+#define FRAME_ERROR 0b00000011
+#define PACKET_ERROR 0b00000111
 
+typedef enum {
+		REC_DATA,
+		REC_FRAMEDATA_ERROR,
+		REC_PACKET_ERROR,
+		REC_SUCCESS
+}FlagRecDataEnum;
+
+typedef enum{
+	SEND_DATA,
+	SEND_FRAME_ERROR,
+	SEND_PACKET_ERROR,
+	SEND_SUCCESS,
+	NOT_SEND
+}FlagSendDataEnum;
 
 #endif /* CAN_FLAG_H_ */

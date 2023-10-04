@@ -1,3 +1,4 @@
+"./CANlibrary/CAN_Flag.o"
 "./CANlibrary/canframe.o"
 "./CRC/CRC.o"
 "./Core/Src/main.o"

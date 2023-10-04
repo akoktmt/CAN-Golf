@@ -5,6 +5,7 @@
 #include "canframe.h"
 #include "stm32f1xx_hal_can.h"
 #include "CRC.h"
+#include "CAN_Flag.h"
 extern CAN_HandleTypeDef hcan;
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *Buffer) {
 	NodeBufferHandle defaultNodeHandle = {0};
@@ -32,6 +33,7 @@ void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
 	FlagInit->Bits.Flag_bit_6 = 0;
 	FlagInit->Bits.Flag_bit_7 = 0;
 	FlagInit->FlagDuplicate=0;
+	FlagInit->SumOfFlag=0;
 	memset(FlagInit->FlagFrameFull,0,sizeof(FlagInit->FlagFrameFull));
 }
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
@@ -47,12 +49,15 @@ void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer) {
 	NodeBuffer->NumberOfFlags = 0;
 	memset(NodeBuffer->NodeBuffer, 0, sizeof(NodeBuffer->NodeBuffer));
 }
-uint16_t CAN_Send_Response(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
-
-		CAN_TxHeaderTypeDef Txheader) {
+uint16_t CAN_Send_Response(uint8_t ID,uint8_t Opcode,uint8_t FrameType){
+	CAN_TxHeaderTypeDef TxHeader;
+	uint32_t Txmailbox;
 	uint8_t OpcodeData[8] = { Opcode, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 };
-	CAN_TXHeaderConfig(&Txheader, StdId);
-	if (HAL_CAN_AddTxMessage(&hcan, &Txheader, OpcodeData, &Txmailbox)
+	uint8_t StID=0x00;
+	StID|=ID;
+	StID=(StID<<3)|FrameType;
+	CAN_TXHeaderConfig(&TxHeader, StID);
+	if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, OpcodeData, &Txmailbox)
 			!= HAL_OK) {
 		Error_Handler();
 	}
@@ -64,6 +69,7 @@ void processFrame(FlagsDataHandle *FlagHandle,uint8_t ID,CANBufferHandleStruct *
     if (RxBuffer->NodeHandle[ID].FrameType == FrameType && FlagHandle->FlagFrameFull[FrameType] == 0) {
     	memcpy(RxBuffer->NodeHandle[ID].NodeBuffer[RxBuffer->NodeHandle[ID].FrameType], Data, CAN_MAX_DATA);
         FlagHandle->FlagFrameFull[FrameType]= 1;
+        FlagHandle->SumOfFlag+=FlagHandle->FlagFrameFull[FrameType];
     }
 }
 
@@ -171,7 +177,7 @@ uint8_t CAN_Recieve_Physical(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
 }
 
 uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer) {
+		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecDataEnum *FlagRecHandle) {
 	uint8_t Data[8] = { 0 };
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
@@ -205,7 +211,23 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 		{
 			processFrame(FlagHandle, ID, RxBuffer,FrameType, Data);
 		}
-
+		if(RxBuffer->NodeHandle[ID].NodeIndex==RxBuffer->NodeHandle[ID].NumberOfFrame)
+		{
+			if(FlagHandle->SumOfFlag=RxBuffer->NodeHandle[ID].NumberOfFrame)
+			{
+				*FlagRecHandle=REC_SUCCESS;
+			}
+			else
+			{
+				for(FrameType=0;FrameType<=RxBuffer->NodeHandle[ID].NumberOfFrame;FrameType++)
+				{
+					if(FlagHandle->FlagFrameFull[FrameType]==0)
+					{
+						CAN_Send_Response(OBSTALCE8, FRAME_ERROR, FrameType);
+					}
+				}
+			}
+		}
 	break;
 	case OBSTALCE7:
 		for(FrameType=0; FrameType<SIZE_FRAME_DATA;FrameType++)

@@ -1,0 +1,15 @@
+/*
+ * CAN_Flag.h
+ *
+ *  Created on: Oct 4, 2023
+ *      Author: win 10
+ */
+
+#ifndef CAN_FLAG_H_
+#define CAN_FLAG_H_
+
+#define ACK 0b00000001
+#define FRAME_ERROR 0b00000011
+#define PACKET_ERROR 0b00000111
+
+#endif /* CAN_FLAG_H_ */

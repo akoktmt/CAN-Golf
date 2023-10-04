@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "canframe.h"
+#include "CAN_Flag.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -99,12 +100,11 @@ int main(void)
   uint32_t Txmailbox;
   CANConfigIDTxtypedef pIDtype;
   pIDtype.MessageType=COMMAND_FRAME;
-  pIDtype.SenderID=OBSTALCE7;
+  pIDtype.SenderID=OBSTALCE8;
   CANBufferHandleStruct Buffer;
-  CANBufferHandleStruct RxBuffer;
   CANBufferHandleStruct_Init(&Buffer);
   CAN_RxHeaderTypeDef RxHeader;
-  FlagRecDataEnum FlagRec=0;
+  FlagRecDataEnum FlagRec;
   FlagsDataHandle FlagHandle;
   FlagsDataHandle Flag;
   FlagsDataHandle_Init(&Flag);
@@ -135,10 +135,11 @@ int main(void)
 	 // CAN_DataLink_Separate(&Buffer,Data,9);
 	//	CAN_Network_Packet(&Buffer,Data,62);
 	 HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-	// CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
+	 //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
 	// CAN_Recieve_Physical(&RxBuffer,DataRec);
 	 //HAL_UART_Transmit( &huart1, DataRec, sizeof(DataRec), HAL_MAX_DELAY);
-	 CAN_Receive_DataLink(&RxHeader,&Flag,&RxBuffer);
+	 CAN_Receive_DataLink(&RxHeader,&Flag,&Buffer,&FlagRec);
+	//CAN_Send_Response(0b1111, ACK, 0b010);
 	 HAL_Delay(500);
   }
   /* USER CODE END 3 */
