@@ -6,22 +6,41 @@
 #include "stm32f1xx_hal_can.h"
 #include "CRC.h"
 extern CAN_HandleTypeDef hcan;
+NodeBufferHandle NodeID[Node_Number] = { 0 };
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer) {
 	TxBuffer->Buffer_Index = 0;
 	TxBuffer->SenderID = 0;
 	TxBuffer->RecvID = 0;
-	TxBuffer->FrameType_Index = FIRST_FRAME;
+	TxBuffer->FrameType_Index = SET_UP_FRAME;
+	TxBuffer->PacketDataLength = 0;
+	TxBuffer->CRCValue = 0;
 	memset(TxBuffer->NetworkBuffer, 0, sizeof(TxBuffer->NetworkBuffer));
-	memset(TxBuffer->Buffer, 0, sizeof(TxBuffer->Buffer));
+	memset(TxBuffer->Buffer, 0x55, sizeof(TxBuffer->Buffer));
 	memset(TxBuffer->StoreData, 0, sizeof(TxBuffer->StoreData));
 }
-
-uint32_t CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
+void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
+	FlagInit->Bits.Flag_bit_0 = 0;
+	FlagInit->Bits.Flag_bit_1 = 0;
+	FlagInit->Bits.Flag_bit_2 = 0;
+	FlagInit->Bits.Flag_bit_3 = 0;
+	FlagInit->Bits.Flag_bit_4 = 0;
+	FlagInit->Bits.Flag_bit_5 = 0;
+	FlagInit->Bits.Flag_bit_6 = 0;
+	FlagInit->Bits.Flag_bit_7 = 0;
+	FlagInit->FlagDuplicate=0;
+}
+void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
 	Txheader->DLC = 8;
 	Txheader->RTR = CAN_RTR_DATA;
 	Txheader->IDE = CAN_ID_STD;
 	Txheader->StdId = StdId;
-	return HAL_OK;
+}
+void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer) {
+	NodeBuffer->NodeIndex = 0;
+	NodeBuffer->CRCValue = 0;
+	NodeBuffer->FrameType = 0;
+	NodeBuffer->NumberOfFlags = 0;
+	memset(NodeBuffer->NodeBuffer, 0, sizeof(NodeBuffer->NodeBuffer));
 }
 uint16_t CAN_Send_Response(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
 		CAN_TxHeaderTypeDef Txheader) {
@@ -38,43 +57,48 @@ uint16_t CAN_Send_Response(uint8_t Opcode, uint8_t StdId, uint32_t Txmailbox,
 
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength) {
-	uint8_t PacketDataLength = DataLength + 2;
-	uint8_t mCRC = crc_8(Data, PacketDataLength - 1);
+	TxBuffer->PacketDataLength = DataLength + 2;
+	TxBuffer->CRCValue = crc_8(Data, DataLength);
 	TxBuffer->Buffer_Index = DataLength;
-	TxBuffer->NumberOfFrame = 1 + (PacketDataLength / 8);
+	if (TxBuffer->PacketDataLength % 8 == 0) {
+		TxBuffer->NumberOfFrame = (TxBuffer->PacketDataLength / 8);
+	} else {
+		TxBuffer->NumberOfFrame = (TxBuffer->PacketDataLength / 8) + 1;
+	}
 	memcpy(TxBuffer->NetworkBuffer, Data, DataLength);
-	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index] = PacketDataLength;
-	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = mCRC;
+	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index] =
+			TxBuffer->PacketDataLength;
+	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = TxBuffer->CRCValue;
+	TxBuffer->Buffer_Index = 0;
 	return HAL_OK;
 }
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data, uint8_t DataLength) {
-	CAN_Network_Packet(TxBuffer, Data, DATA_TEST);
-	uint8_t PacketDataLength = DataLength + 2;
-	for (int i = 0; i < TxBuffer->NumberOfFrame; i++) {
+		uint8_t *Data) {
+	CAN_Send_Network_Packet(TxBuffer, Data, DATA_TEST);
+	uint8_t PacketLength = TxBuffer->PacketDataLength;
+	uint8_t NumberOfFrame = TxBuffer->NumberOfFrame;
+	TxBuffer->Buffer[NumberOfFrame - 1][6] = PacketLength;
+	TxBuffer->Buffer[NumberOfFrame - 1][7] = TxBuffer->CRCValue;
+	for (int i = 0; i < NumberOfFrame; i++) {
 		for (TxBuffer->Buffer_Index = 0; TxBuffer->Buffer_Index < 8;
 				TxBuffer->Buffer_Index++) {
 			TxBuffer->Buffer[i][TxBuffer->Buffer_Index] =
 					TxBuffer->NetworkBuffer[i * 8 + TxBuffer->Buffer_Index];
-			PacketDataLength--;
-			if (PacketDataLength == 0) {
+			PacketLength--;
+			if (PacketLength == 2) {
 				break;
 			}
 		}
-	}
-	for (; TxBuffer->Buffer_Index < 7; TxBuffer->Buffer_Index++) {
-		TxBuffer->Buffer[TxBuffer->NumberOfFrame - 1][TxBuffer->Buffer_Index + 1] =
-		FILL_VALUE;
+		if (PacketLength == 2) {
+			break;
+		}
 	}
 	TxBuffer->Buffer_Index = 0;
 	return HAL_OK;
 }
-
 uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype, uint32_t Txmailbox) {
-	CAN_DataLink_Separate(TxBuffer, Data, DATA_TEST);
-	uint8_t PacketDataLength = DataLength + 2;
-	uint8_t LastFrameFlag = 0;
+	CAN_Send_DataLink_Separate(TxBuffer, Data);
 	CAN_TxHeaderTypeDef Txheader;
 	uint8_t Message_ID = pIDtype->MessageType;
 	uint8_t Sender_ID = pIDtype->SenderID;
@@ -90,7 +114,7 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 	Txheader.RTR = CAN_RTR_DATA;
 	Txheader.IDE = CAN_ID_STD;
 	CAN_Store_Data(TxBuffer, pIDtype);
-	for (int i = 0; i < NumberOfFrame; i++) {
+	for (int8_t i = NumberOfFrame - 1; i >= 0; i--) {
 		Txheader.StdId = StdId;
 		if (HAL_CAN_AddTxMessage(&hcan, &Txheader, TxBuffer->Buffer[i],
 				&Txmailbox) != HAL_OK) {
@@ -98,17 +122,11 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		}
 		while (HAL_CAN_IsTxMessagePending(&hcan, Txmailbox))
 			;
-		LastFrameFlag++;
 		StdId = StdId >> 3;
 		FrameType++;
-		if (LastFrameFlag == NumberOfFrame - 1) {
-			StdId = (StdId << 3) | END_FRAME;
-		} else {
-			StdId = (StdId << 3) | FrameType;
-		}
+		StdId = (StdId << 3) | FrameType;
 	}
-	FrameType = 0;
-	NumberOfFrame = 0;
+	return HAL_OK;
 }
 
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID) {
@@ -127,18 +145,130 @@ uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID) {
 		FrameType++;
 		BufferIndex = 0;
 	}
-	FrameType = 0;
+	return HAL_OK;
 }
-uint8_t CAN_Recieve_Physical(CANBufferHandleStruct *RxData) {
-	CAN_RxHeaderTypeDef RxHeader;
+
+uint8_t CAN_Recieve_Physical(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
+
 	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) == 0)
 		;
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, frame)
-			!= HAL_OK) {
+	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, RxHeader, Data) != HAL_OK) {
 		Error_Handler();
 	}
+	return HAL_OK;
+}
+
+uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
+		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer) {
+	uint8_t Data[8] = { 0 };
+	uint16_t StdID = 0;
+	uint8_t ID = 0;
+	uint8_t FrameType = 0;
+	CAN_Recieve_Physical(RxHeader, Data);
+
+	StdID = RxHeader->StdId;
+	ID = (StdID >> 3) & 15;
+	NodeID[ID].FrameType = StdID & 7;
+
+	if (NodeID[ID].FrameType == SET_UP_FRAME&&NodeID[ID].DuplicateFrame!=1) {
+		NodeID[ID].DuplicateFrame=1;
+		NodeID[ID].PacketLength = Data[6];
+		NodeID[ID].CRCValue = Data[7];
+		if (NodeID[ID].PacketLength % 8 == 0) {
+			NodeID[ID].NumberOfFrame = (NodeID[ID].PacketLength / 8);
+		} else {
+			NodeID[ID].NumberOfFrame = (NodeID[ID].PacketLength / 8) + 1;
+		}
+	}
+	else
+	{
+		//FlagFrameError
+	}
+	switch (ID) {
+	case OBSTALCE8:
+		if (NodeID[ID].FrameType == SET_UP_FRAME
+				&& FlagHandle->Bits.Flag_bit_0 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_0 = 1;
+		}
+		if (NodeID[ID].FrameType == FIRST_FRAME
+				&& FlagHandle->Bits.Flag_bit_1 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_1 = 1;
+		}
+		if (NodeID[ID].FrameType == SECOND_FRAME
+				&& FlagHandle->Bits.Flag_bit_2 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_2 = 1;
+		}
+		if (NodeID[ID].FrameType == THIRD_FRAME
+				&& FlagHandle->Bits.Flag_bit_3 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_3 = 1;
+		}
+		if (NodeID[ID].FrameType == FOURTH_FRAME
+				&& FlagHandle->Bits.Flag_bit_4 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_4 = 1;
+		}
+		if (NodeID[ID].FrameType == FIFTH_FRAME
+				&& FlagHandle->Bits.Flag_bit_5 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_5 = 1;
+		}
+		if (NodeID[ID].FrameType == SIX_FRAME
+				&& FlagHandle->Bits.Flag_bit_6 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_6 = 1;
+		}
+		if (NodeID[ID].FrameType == SEVEN_FRAME
+				&& FlagHandle->Bits.Flag_bit_7 == 0) {
+			memcpy(RxBuffer->Buffer[NodeID[ID].FrameType], Data, CAN_MAX_DATA);
+			FlagHandle->Bits.Flag_bit_7 = 1;
+		}
+	break;
+//	case OBSTALCE7:
+//		break;
+//	case OBSTALCE6:
+//		break;
+//	case OBSTALCE5:
+//		break;
+//	case OBSTALCE4:
+//		break;
+//	case OBSTALCE3:
+//		break;
+//	case OBSTALCE2:
+//		break;
+//	case OBSTALCE1:
+//		break;
+//	case POWER:
+//		break;
+//	case STEERING:
+//		break;
+//	case MASTER:
+//		break;
+//	case LIGHT_GPS:
+//		break;
+//	case ENGINE_CONTROL:
+//		break;
+//	case ALL_NODE:
+//		break;
 
 }
+	return HAL_OK;
+}
+uint8_t CAN_Receive_App(uint8_t *Data) {
+FlagsDataHandle Flag;
+//CAN_Receive_NetWork(Data,&Flag);
+
+return HAL_OK;
+}
+
+//uint8_t CAN_Receive_NetWork(FlagsDataHandle Flag,CANBufferHandleStruct *NetBuffer)
+//{
+//	//check
+//}
+
 //uint8_t CAN_Receive_Dataframe(CAN_HandlerStruct* canhandler,CANConfigIDRxtypedef* pIDtype,uint8_t *ReceiveData, uint32_t *ReceiveLength)
 //{
 //	CAN_RxHeaderTypeDef RxHeader;
@@ -189,24 +319,22 @@ uint8_t CAN_Recieve_Physical(CANBufferHandleStruct *RxData) {
 //	return HAL_OK;
 //}
 
-//uint32_t CAN_Config_filtering(CAN_HandlerStruct *Can, uint16_t NodeID)
-//{
-//	CAN_FilterTypeDef Can_filter_init;
-//	Can_filter_init.FilterActivation=ENABLE;
-//	Can_filter_init.FilterBank=Can->fillterbank++;
-//	if(Can->fillterbank > 14){
-//		Error_Handler();
+uint32_t CAN_Config_filtering(void) {
+CAN_FilterTypeDef Can_filter_init;
+Can_filter_init.FilterActivation = ENABLE;
+Can_filter_init.FilterBank = 0;
+Can_filter_init.FilterFIFOAssignment = CAN_RX_FIFO0;
+Can_filter_init.FilterIdHigh = 0x0000;
+Can_filter_init.FilterIdLow = 0x0000;
+Can_filter_init.FilterMaskIdHigh = 0x0000;
+Can_filter_init.FilterMaskIdLow = 0x0000;
+Can_filter_init.FilterMode = CAN_FILTERMODE_IDMASK;
+Can_filter_init.FilterScale = CAN_FILTERSCALE_32BIT;
+if (HAL_CAN_ConfigFilter(&hcan, &Can_filter_init) != HAL_OK) {
+	Error_Handler();
+}
+return HAL_OK;
+}
+//	void ProcessError(void) {
+//		//print errormess
 //	}
-//	Can_filter_init.FilterFIFOAssignment=CAN_RX_FIFO0;
-//	Can_filter_init.FilterIdHigh=NodeID<<8;
-//	Can_filter_init.FilterIdLow= 0x0000;
-//	Can_filter_init.FilterMaskIdHigh= 0x0F00;
-//	Can_filter_init.FilterMaskIdLow= 0x0000;
-//	Can_filter_init.FilterMode=CAN_FILTERMODE_IDMASK;
-//	Can_filter_init.FilterScale=CAN_FILTERSCALE_32BIT;
-//	if(HAL_CAN_ConfigFilter(Can->hcan,&Can_filter_init)!=HAL_OK)
-//	{
-//		Error_Handler();
-//	}
-//	return HAL_OK;
-//}

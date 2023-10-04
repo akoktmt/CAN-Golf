@@ -1,0 +1,165 @@
+/*
+ * CAN_Buffer.h
+ *
+ *  Created on: Oct 3, 2023
+ *      Author: win 10
+ */
+
+#ifndef CAN_BUFFER_H_
+#define CAN_BUFFER_H_
+
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}PowerNodeBufferHandle;
+
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}MasterNodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}EngineNodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}LighSpeaGPSNodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}SteeringNodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle1NodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_2_BufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_3_BufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_4_NodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_5_NodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_6_NodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_7_NodeBufferHandle;
+typedef struct
+{
+	uint8_t NodeBuffer[8][8];
+	uint8_t FlagNode[8];
+	uint8_t NodeIndex;
+	uint8_t CheckFrameType;
+	uint8_t PacketLength;
+	uint8_t NumberOfFrame;
+	uint8_t CRCValue;
+	uint8_t FrameType;
+}Obstacle_8_NodeBufferHandle;
+
+typedef struct
+{
+	PowerNodeBufferHandle
+	MasterNodeBufferHandle
+	EngineNodeBufferHandle
+	LighSpeaGPSNodeBufferHandle
+
+
+}
+#endif /* CAN_BUFFER_H_ */

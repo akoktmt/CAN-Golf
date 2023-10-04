@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;CAN_Goft/CANlibrary/CAN_Config.h&apos; to &apos;CANConfigBuffer.h&apos;" description="Rename resource &apos;CAN_Config.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="CANlibrary/CAN_Config.h" name="CANConfigBuffer.h" stamp="1696303286968" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;CAN_Goft/CANlibrary/CAN_Buffer&apos; to &apos;CAN_Buffer.h&apos;" description="Rename resource &apos;CAN_Buffer&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="CANlibrary/CAN_Buffer" name="CAN_Buffer.h" stamp="1696303355674" updateReferences="true"/>
+</session>

@@ -1,38 +1,10 @@
-22:53:08 **** Incremental Build of configuration Debug for project CAN_Test ****
+08:54:05 **** Incremental Build of configuration Debug for project CAN_Test ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I"D:/CAN-main1/CAN-main/CAN_Test/CANlibrary" -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../CANlibrary/canframe.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I"D:/CAN-main1/CAN-main/CAN_Test/CANlibrary" -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/canframe.d" -MT"CANlibrary/canframe.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/canframe.o"
-../Core/Src/main.c: In function 'tMainTask':
-../Core/Src/main.c:393:37: warning: pointer targets in passing argument 2 of 'CAN_Physical_Send' differ in signedness [-Wpointer-sign]
-  393 |          CAN_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
-      |                                     ^~~~
-      |                                     |
-      |                                     char *
-In file included from ../Core/Src/main.c:26:
-D:/CAN-main1/CAN-main/CAN_Test/CANlibrary/canframe.h:88:68: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
-   88 | uint8_t CAN_Physical_Send(CANBufferHandleStruct *TxBuffer,uint8_t *Data,uint8_t DataLength,CANConfigIDTxtypedef *pIDtype,uint32_t Txmailbox);
-      |                                                           ~~~~~~~~~^~~~
-../Core/Src/main.c:393:10: warning: 'Txmailbox' is used uninitialized [-Wuninitialized]
-  393 |          CAN_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../CANlibrary/canframe.c: In function 'CAN_Physical_Send':
-../CANlibrary/canframe.c:76:17: warning: unused variable 'PacketDataLength' [-Wunused-variable]
-   76 |         uint8_t PacketDataLength = DataLength + 2;
-      |                 ^~~~~~~~~~~~~~~~
-../CANlibrary/canframe.c:104:1: warning: control reaches end of non-void function [-Wreturn-type]
-  104 | }
-      | ^
-arm-none-eabi-gcc -o "CAN_Test.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN-main1\CAN-main\CAN_Test\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: CAN_Test.elf
- 
 arm-none-eabi-size   CAN_Test.elf 
-arm-none-eabi-objdump -h -S  CAN_Test.elf  > "CAN_Test.list"
    text	   data	    bss	    dec	    hex	filename
-  18628	     24	   8168	  26820	   68c4	CAN_Test.elf
+  19732	     24	   8168	  27924	   6d14	CAN_Test.elf
 Finished building: default.size.stdout
  
-Finished building: CAN_Test.list
- 
 
-22:53:10 Build Finished. 0 errors, 4 warnings. (took 1s.481ms)
+08:54:05 Build Finished. 0 errors, 0 warnings. (took 421ms)
 
