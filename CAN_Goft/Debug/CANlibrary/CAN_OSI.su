@@ -1,9 +1,9 @@
 ../CANlibrary/CAN_OSI.c:7:10:CAN_Send_Response	56	static
-../CANlibrary/CAN_OSI.c:23:6:processFrame	24	static
+../CANlibrary/CAN_OSI.c:23:6:CAN_ProcessFrame	32	static
 ../CANlibrary/CAN_OSI.c:35:9:CAN_Send_Network_Packet	24	static
 ../CANlibrary/CAN_OSI.c:52:9:CAN_Send_DataLink_Separate	32	static
 ../CANlibrary/CAN_OSI.c:76:9:CAN_Send_Physical_Send	56	static
 ../CANlibrary/CAN_OSI.c:109:9:CAN_Store_Data	32	static
 ../CANlibrary/CAN_OSI.c:128:9:CAN_Recieve_Physical	16	static
 ../CANlibrary/CAN_OSI.c:138:9:CAN_Receive_DataLink	48	static
-../CANlibrary/CAN_OSI.c:241:10:CAN_Config_filtering	48	static
+../CANlibrary/CAN_OSI.c:243:10:CAN_Config_filtering	48	static

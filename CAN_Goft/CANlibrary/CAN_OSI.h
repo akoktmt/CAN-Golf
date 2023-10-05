@@ -62,8 +62,6 @@ typedef struct
 	uint8_t NumberOfFrame;
 	uint8_t CRCValue;
 	uint8_t FrameType;
-	uint8_t NumberOfFlags;
-	uint8_t FlagOfFrame;
 }NodeBufferHandle;
 
 typedef struct {
@@ -91,25 +89,6 @@ typedef struct {
 	uint16_t SenderID;
 } CANConfigIDTxtypedef;
 
-typedef struct  {
-	uint8_t FlagDuplicate;
-	uint8_t FlagFrameFull[8];
-	uint8_t SumOfFlag;
-    union {
-        struct {
-        	uint8_t Flag_bit_0:1;
-			uint8_t Flag_bit_1:1;
-			uint8_t Flag_bit_2:1;
-			uint8_t Flag_bit_3:1;
-			uint8_t Flag_bit_4:1;
-			uint8_t Flag_bit_5:1;
-			uint8_t Flag_bit_6:1;
-			uint8_t Flag_bit_7:1;
-        }Bits;
-           uint8_t flags;
-    };
-}FlagsDataHandle;
-
 uint32_t CAN_Config_filtering(void);
 uint16_t CAN_Send_Response(uint8_t ID,uint8_t Opcode,uint8_t FrameType);
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
@@ -120,14 +99,15 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype, uint32_t Txmailbox);
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecDataEnum *FlagRecHandle);
+		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecDataEnum *FlagRecHandle);
 uint8_t CAN_Receive_App(uint8_t *Data);
 uint8_t CAN_Receive_NetWork(uint8_t *Data);
 
-void processFrame(FlagsDataHandle *FlagHandle,uint8_t ID,CANBufferHandleStruct *RxBuffer,uint8_t FrameType,uint8_t* Data);
+void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
+		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);
-void FlagsDataHandle_Init(FlagsDataHandle *FlagInit);
+void FlagsDataHandle_Init(FlagFrameHandle *FlagInit);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);
 void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer);
 void ProcessError(void);

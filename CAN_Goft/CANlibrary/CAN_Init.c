@@ -6,6 +6,7 @@
  */
 #include <CAN_OSI.h>
 #include <string.h>
+#include "CAN_Flag.h"
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *Buffer) {
 	NodeBufferHandle defaultNodeHandle = {0};
 	Buffer->Buffer_Index = 0;
@@ -22,29 +23,24 @@ void CANBufferHandleStruct_Init(CANBufferHandleStruct *Buffer) {
 		Buffer->NodeHandle[i] = defaultNodeHandle;
 	}
 }
-void FlagsDataHandle_Init(FlagsDataHandle *FlagInit) {
-	FlagInit->Bits.Flag_bit_0 = 0;
-	FlagInit->Bits.Flag_bit_1 = 0;
-	FlagInit->Bits.Flag_bit_2 = 0;
-	FlagInit->Bits.Flag_bit_3 = 0;
-	FlagInit->Bits.Flag_bit_4 = 0;
-	FlagInit->Bits.Flag_bit_5 = 0;
-	FlagInit->Bits.Flag_bit_6 = 0;
-	FlagInit->Bits.Flag_bit_7 = 0;
-	FlagInit->FlagDuplicate=0;
-	FlagInit->SumOfFlag=0;
-	memset(FlagInit->FlagFrameFull,0,sizeof(FlagInit->FlagFrameFull));
+void FlagFrameHandle_Init(FlagFrameHandle *FlagInit) {
+	FlagIdHandle DefaultFlagID= {0};
+	FlagInit->FrameBits.Flag_Frame_0 = 0;
+	FlagInit->FrameBits.Flag_Frame_1 = 0;
+	FlagInit->FrameBits.Flag_Frame_2 = 0;
+	FlagInit->FrameBits.Flag_Frame_3 = 0;
+	FlagInit->FrameBits.Flag_Frame_4 = 0;
+	FlagInit->FrameBits.Flag_Frame_5 = 0;
+	FlagInit->FrameBits.Flag_Frame_6 = 0;
+	FlagInit->FrameBits.Flag_Frame_7 = 0;
+	for(int i=0; i<16;i++)
+	{
+		FlagInit->FlagID[i]=DefaultFlagID;
+	}
 }
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId) {
 	Txheader->DLC = 8;
 	Txheader->RTR = CAN_RTR_DATA;
 	Txheader->IDE = CAN_ID_STD;
 	Txheader->StdId = StdId;
-}
-void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer) {
-	NodeBuffer->NodeIndex = 0;
-	NodeBuffer->CRCValue = 0;
-	NodeBuffer->FrameType = 0;
-	NodeBuffer->NumberOfFlags = 0;
-	memset(NodeBuffer->NodeBuffer, 0, sizeof(NodeBuffer->NodeBuffer));
 }

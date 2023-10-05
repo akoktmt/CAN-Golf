@@ -27,4 +27,27 @@ typedef enum{
 	NOT_SEND
 }FlagSendDataEnum;
 
+typedef struct
+{
+	uint8_t FlagFrameFull[8];
+	uint8_t SumOfFlag;
+}FlagIdHandle;
+
+typedef struct{
+	FlagIdHandle FlagID[16];
+	union {
+     struct {
+    	 	uint8_t Flag_Frame_0:1;
+			uint8_t Flag_Frame_1:1;
+			uint8_t Flag_Frame_2:1;
+			uint8_t Flag_Frame_3:1;
+			uint8_t Flag_Frame_4:1;
+			uint8_t Flag_Frame_5:1;
+			uint8_t Flag_Frame_6:1;
+			uint8_t Flag_Frame_7:1;
+     	 }FrameBits;
+        uint8_t flags;
+	};
+}FlagFrameHandle;
+
 #endif /* CAN_FLAG_H_ */

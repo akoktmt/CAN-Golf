@@ -20,15 +20,15 @@ uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
 		;
 	return HAL_OK;
 }
-void processFrame(FlagsDataHandle *FlagHandle, uint8_t ID,
+void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data) {
 	if (RxBuffer->NodeHandle[ID].FrameType == FrameType
-			&& FlagHandle->FlagFrameFull[FrameType] == 0) {
+			&& FlagHandle->FlagID[ID].FlagFrameFull[FrameType] == 0) {
 		memcpy(
 				RxBuffer->NodeHandle[ID].NodeBuffer[RxBuffer->NodeHandle[ID].FrameType],
 				Data, CAN_MAX_DATA);
-		FlagHandle->FlagFrameFull[FrameType] = 1;
-		FlagHandle->SumOfFlag += FlagHandle->FlagFrameFull[FrameType];
+		FlagHandle->FlagID[ID].FlagFrameFull[FrameType] = 1;
+		FlagHandle->FlagID[ID].SumOfFlag += FlagHandle->FlagID[ID].FlagFrameFull[FrameType];
 	}
 }
 
@@ -130,28 +130,30 @@ uint8_t CAN_Recieve_Physical(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
 	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) == 0)
 		;
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, RxHeader, Data) != HAL_OK) {
-		Error_Handler();
+		Error_Handler(); //get message from RAM;
 	}
 	return HAL_OK;
 }
 
 uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagsDataHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
+		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecDataEnum *FlagRecHandle) {
-	uint8_t Data[8] = { 0 };
+
+	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
 	uint8_t FrameType = 0;
-	CAN_Recieve_Physical(RxHeader, Data);
+
+	CAN_Recieve_Physical(RxHeader, DataPhysical); // get Data
 
 	StdID = RxHeader->StdId;
 	ID = (StdID >> 3) & 15;
-	RxBuffer->NodeHandle[ID].FrameType = StdID & 7;
+	RxBuffer->NodeHandle[ID].FrameType = StdID & 7; // get frame type store into Rxbuffer struct with Node ID manage frame type
 	if (RxBuffer->NodeHandle[ID].FrameType == SET_UP_FRAME
-			&& RxBuffer->NodeHandle[ID].DuplicateFrame != 1) {
-		RxBuffer->NodeHandle[ID].DuplicateFrame = 1;
-		RxBuffer->NodeHandle[ID].PacketLength = Data[6];
-		RxBuffer->NodeHandle[ID].CRCValue = Data[7];
+			&& RxBuffer->NodeHandle[ID].DuplicateFrame != 1) { // check if frame type = SET_UP_FRAME
+		RxBuffer->NodeHandle[ID].DuplicateFrame = 1; 			// check send multiple SET_UP_frame
+		RxBuffer->NodeHandle[ID].PacketLength = DataPhysical[6];
+		RxBuffer->NodeHandle[ID].CRCValue = DataPhysical[7];
 		if (RxBuffer->NodeHandle[ID].PacketLength % 8 == 0) {
 			RxBuffer->NodeHandle[ID].NumberOfFrame =
 					(RxBuffer->NodeHandle[ID].PacketLength / 8);
@@ -169,18 +171,18 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 		RxBuffer->NodeHandle[ID].NodeIndex++;
 		for (FrameType = 0; FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
 				FrameType++) {
-			processFrame(FlagHandle, ID, RxBuffer, FrameType, Data);
+			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
 		}
 		if (RxBuffer->NodeHandle[ID].NodeIndex
 				== RxBuffer->NodeHandle[ID].NumberOfFrame) {
-			if (FlagHandle->SumOfFlag
+			if (FlagHandle->FlagID[ID].SumOfFlag
 					== RxBuffer->NodeHandle[ID].NumberOfFrame) {
 				*FlagRecHandle = REC_SUCCESS;
 			} else {
 				for (FrameType = 0;
 						FrameType <= RxBuffer->NodeHandle[ID].NumberOfFrame;
 						FrameType++) {
-					if (FlagHandle->FlagFrameFull[FrameType] == 0) {
+					if (FlagHandle->FlagID[ID].FlagFrameFull[FrameType] == 0) {
 						CAN_Send_Response(OBSTALCE8, FRAME_ERROR, FrameType);
 					}
 				}
@@ -189,7 +191,7 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 		break;
 	case OBSTALCE7:
 		for (FrameType = 0; FrameType < SIZE_FRAME_DATA; FrameType++) {
-			processFrame(FlagHandle, ID, RxBuffer, FrameType, Data);
+			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
 		}
 		break;
 	case OBSTALCE6:

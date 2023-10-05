@@ -105,11 +105,8 @@ int main(void)
   CANBufferHandleStruct_Init(&Buffer);
   CAN_RxHeaderTypeDef RxHeader;
   FlagRecDataEnum FlagRec;
-  FlagsDataHandle FlagHandle;
-  FlagsDataHandle Flag;
-  FlagsDataHandle_Init(&Flag);
-  NodeBufferHandle NodeID;
-  NodeBufferHandle_Init(&NodeID);
+  FlagFrameHandle Flag;
+  FlagFrameHandle_Init(&Flag);
   uint8_t DataRec[16];
   char Data[64]={0};
   uint8_t mess[30]={0};
