@@ -106,7 +106,7 @@ int main(void)
   CAN_RxHeaderTypeDef RxHeader;
   FlagRecDataEnum FlagRec;
   FlagFrameHandle Flag;
-  FlagFrameHandle_Init(&Flag);
+  FlagsFrameHandle_Init(&Flag);
   uint8_t DataRec[16];
   char Data[64]={0};
   uint8_t mess[30]={0};

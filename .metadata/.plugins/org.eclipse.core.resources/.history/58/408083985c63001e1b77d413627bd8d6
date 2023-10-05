@@ -240,6 +240,7 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 	case ALL_NODE:
 		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
 		break;
+
 	}
 	return HAL_OK;
 }

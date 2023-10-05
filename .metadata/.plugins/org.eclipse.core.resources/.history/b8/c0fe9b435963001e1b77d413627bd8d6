@@ -21,10 +21,9 @@ uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
 	return HAL_OK;
 }
 
-void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecDataEnum *FlagRecHandle){
-	uint8_t FrameType = 0;
+void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t DataPhysical, FlagRecDataEnum *FlagRecHandle){
 	RxBuffer->NodeHandle[ID].NodeIndex++;
-		for (; FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
+		for (FrameType = 0; FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
 				FrameType++) {
 			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
 		}
@@ -174,6 +173,7 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
+	uint8_t FrameType = 0;
 
 	CAN_Recieve_Physical(RxHeader, DataPhysical); // get Data
 
@@ -202,44 +202,47 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
 		break;
 	case OBSTALCE7:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+		for (FrameType = 0; FrameType < SIZE_FRAME_DATA; FrameType++) {
+			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
+		}
 		break;
 	case OBSTALCE6:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE5:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE4:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE3:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE2:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE1:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case POWER:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case STEERING:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case MASTER:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case LIGHT_GPS:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case ENGINE_CONTROL:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case ALL_NODE:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
+
 	}
 	return HAL_OK;
 }

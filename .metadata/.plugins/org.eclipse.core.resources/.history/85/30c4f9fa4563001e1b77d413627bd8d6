@@ -20,38 +20,6 @@ uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
 		;
 	return HAL_OK;
 }
-
-void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecDataEnum *FlagRecHandle){
-	uint8_t FrameType = 0;
-	RxBuffer->NodeHandle[ID].NodeIndex++;
-		for (; FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
-				FrameType++) {
-			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
-		}
-		if (RxBuffer->NodeHandle[ID].NodeIndex
-				== RxBuffer->NodeHandle[ID].NumberOfFrame) {
-			if (FlagHandle->FlagID[ID].SumOfFlag
-					== RxBuffer->NodeHandle[ID].NumberOfFrame) {
-				if(*FlagRecHandle == REC_SUCCESS){
-				RxBuffer->NodeHandle[ID].NodeIndex=0;
-				RxBuffer->NodeHandle[ID].DuplicateFrame = 0;
-				FlagHandle->FlagID[ID].SumOfFlag=0;
-				for(FrameType=0;FrameType<RxBuffer->NodeHandle[ID].NumberOfFrame;FrameType++){
-					FlagHandle->FlagID[ID].FlagFrameFull[FrameType]=0;
-				}
-				}
-			} else {
-				for (FrameType = 0;
-						FrameType <= RxBuffer->NodeHandle[ID].NumberOfFrame;
-						FrameType++) {
-					if (FlagHandle->FlagID[ID].FlagFrameFull[FrameType] == 0) {
-						FlagHandle->FlagID[ID].FrameError[FrameType]=1;
-					}
-				}
-			}
-		}
-}
-
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data) {
 	if (RxBuffer->NodeHandle[ID].FrameType == FrameType
@@ -174,6 +142,7 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
+	uint8_t FrameType = 0;
 
 	CAN_Recieve_Physical(RxHeader, DataPhysical); // get Data
 
@@ -199,47 +168,69 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 	}
 	switch (ID) {
 	case OBSTALCE8:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+		RxBuffer->NodeHandle[ID].NodeIndex++;
+		for (FrameType = 0; FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
+				FrameType++) {
+			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
+		}
+		if (RxBuffer->NodeHandle[ID].NodeIndex
+				== RxBuffer->NodeHandle[ID].NumberOfFrame) {
+			if (FlagHandle->FlagID[ID].SumOfFlag
+					== RxBuffer->NodeHandle[ID].NumberOfFrame) {
+				*FlagRecHandle = REC_SUCCESS;
+			} else {
+				for (FrameType = 0;
+						FrameType <= RxBuffer->NodeHandle[ID].NumberOfFrame;
+						FrameType++) {
+					if (FlagHandle->FlagID[ID].FlagFrameFull[FrameType] == 0) {
+						CAN_Send_Response(OBSTALCE8, FRAME_ERROR, FrameType);
+					}
+				}
+			}
+		}
 		break;
 	case OBSTALCE7:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+		for (FrameType = 0; FrameType < SIZE_FRAME_DATA; FrameType++) {
+			CAN_ProcessFrame(FlagHandle, ID, RxBuffer, FrameType, DataPhysical);
+		}
 		break;
 	case OBSTALCE6:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE5:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE4:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE3:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE2:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case OBSTALCE1:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case POWER:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case STEERING:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case MASTER:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case LIGHT_GPS:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case ENGINE_CONTROL:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
 	case ALL_NODE:
-		CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagRecHandle);
+
 		break;
+
 	}
 	return HAL_OK;
 }

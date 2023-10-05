@@ -31,7 +31,7 @@ typedef struct
 {
 	uint8_t FlagFrameFull[8];
 	uint8_t SumOfFlag;
-	uint8_t FrameError[8];
+	uint8_t FrameError;
 }FlagIdHandle;
 
 typedef struct{

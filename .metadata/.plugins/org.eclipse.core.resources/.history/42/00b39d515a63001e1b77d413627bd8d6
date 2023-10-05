@@ -23,7 +23,7 @@ void CANBufferHandleStruct_Init(CANBufferHandleStruct *Buffer) {
 		Buffer->NodeHandle[i] = defaultNodeHandle;
 	}
 }
-void FlagsFrameHandle_Init(FlagFrameHandle *FlagInit) {
+void FlagFrameHandle_Init(FlagFrameHandle *FlagInit) {
 	FlagIdHandle DefaultFlagID= {0};
 	FlagInit->FrameBits.Flag_Frame_0 = 0;
 	FlagInit->FrameBits.Flag_Frame_1 = 0;

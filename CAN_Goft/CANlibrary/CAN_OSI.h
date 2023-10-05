@@ -5,7 +5,7 @@
 #define TIMEOUT_MS 5000
 #define SIZE_FRAME_DATA						0X08
 #define FILL_VALUE 							(0x55)
-#define DATA_TEST							16
+#define DATA_TEST							62
 #define CAN_MAX_DATA						8
 
 #define Node_Number							16
@@ -103,11 +103,11 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 uint8_t CAN_Receive_App(uint8_t *Data);
 uint8_t CAN_Receive_NetWork(uint8_t *Data);
 
+void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecDataEnum *FlagRecHandle);
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);
-void FlagsDataHandle_Init(FlagFrameHandle *FlagInit);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);
 void NodeBufferHandle_Init(NodeBufferHandle *NodeBuffer);
 void ProcessError(void);
