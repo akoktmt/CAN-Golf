@@ -2,6 +2,7 @@
 #include <string.h>
 #include "CRC.h"
 #include "CAN_Flag.h"
+#include <stdlib.h>
 extern CAN_HandleTypeDef hcan;
 
 uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
@@ -33,7 +34,7 @@ void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID,
 			== RxBuffer->NodeHandle[ID].NumberOfFrame) {
 		if (FlagHandle->FlagID[ID].SumOfFlag
 				== RxBuffer->NodeHandle[ID].NumberOfFrame) {
-			*FlagRecHandle = REC_SUCCESS;
+			*FlagRecHandle = REC_FRAMEDATA_SUCCESS;
 			RxBuffer->NodeHandle[ID].NodeIndex = 0;
 			RxBuffer->NodeHandle[ID].DuplicateFrame = 0;
 			FlagHandle->FlagID[ID].SumOfFlag = 0;
@@ -218,21 +219,44 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 }
 uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		FlagFrameHandle *NetworkFlag, FlagRecNotification *FlagNotiHandle) {
-	uint8_t LengthData = 0;
+	uint8_t FrameLength = 0;
 	uint8_t FrameType = 0;
 	uint8_t NetBufferIndex = 0;
-	LengthData = NetBuffer->NodeHandle[NetBuffer->RecvID].NumberOfFrame;
+	uint8_t DataLength=0;
+	uint8_t CRCValue=0;
+	uint8_t *NetData;
+	FrameLength = NetBuffer->NodeHandle[NetBuffer->RecvID].NumberOfFrame;
+	uint8_t NumberofFrame =FrameLength;
 	FrameType = NetBuffer->NodeHandle[NetBuffer->RecvID].FrameType;
-	if (*FlagNotiHandle == REC_SUCCESS) {
-		for (;LengthData > 0; LengthData--) {
+	if (*FlagNotiHandle == REC_FRAMEDATA_SUCCESS) {
+		for (;FrameLength > 0; FrameLength--) {
 			memcpy(NetBuffer->Buffer[NetBufferIndex],
 					NetBuffer->NodeHandle[NetBuffer->RecvID].NodeBuffer[FrameType],
 					CAN_MAX_DATA);
 			NetBufferIndex++;
 			FrameType--;
 		}
-
+		DataLength=NetBuffer->NodeHandle[NetBuffer->RecvID].PacketLength-2;
+		NetData=(uint8_t*)malloc(DataLength*sizeof(uint8_t));
+		for(NetBufferIndex=0;NetBufferIndex<=NumberofFrame;NetBufferIndex++)
+		{
+			for (int j=0;j<8;j++)
+			{
+				NetData[NetBufferIndex*8+j]=NetBuffer->Buffer[NetBufferIndex][j];
+			}
+		}
+		CRCValue=crc_8(NetData,DataLength);
+		if(CRCValue==NetBuffer->NodeHandle[NetBuffer->RecvID].CRCValue)
+		{
+			*FlagNotiHandle=REC_PACKET_SUCCESS;
+		}
+		else
+		{
+			*FlagNotiHandle=REC_PACKET_ERROR;
+		}
+		free(NetData);
 	}
+	return HAL_OK;
 }
 uint32_t CAN_Config_filtering(void) {
 	CAN_FilterTypeDef Can_filter_init;
