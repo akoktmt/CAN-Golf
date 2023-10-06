@@ -17,7 +17,7 @@ typedef enum {
 		REC_FRAMEDATA_ERROR,
 		REC_PACKET_ERROR,
 		REC_SUCCESS
-}FlagRecDataEnum;
+}FlagRecNotification;
 
 typedef enum{
 	SEND_DATA,

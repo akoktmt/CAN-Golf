@@ -2,15 +2,17 @@
 #include "CAN_Flag.h"
 #ifndef CAN_MUTIFRAME_H
 #define CAN_MUTIFRAME_H
+
 #define TIMEOUT_MS 5000
 #define SIZE_FRAME_DATA						0X08
 #define FILL_VALUE 							(0x55)
-#define DATA_TEST							62
+#define DATA_TEST							16
 #define CAN_MAX_DATA						8
 
 #define Node_Number							16
 
 #define CAN_MAX_NODE						16
+
 #define ALL_NODE 							0b0000
 #define COMMAND_FRAME 						0b0001
 #define ACK_COMMAND_FRAME 					0b0010
@@ -96,14 +98,15 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		uint8_t *Data);
 uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype, uint32_t Txmailbox);
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype);
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecDataEnum *FlagRecHandle);
+		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,FlagRecNotification *FlagRecHandle);
 uint8_t CAN_Receive_App(uint8_t *Data);
-uint8_t CAN_Receive_NetWork(uint8_t *Data);
+uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
+		FlagFrameHandle *NetworkFlag,FlagRecNotification *FlagNotiHandle);
 
-void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecDataEnum *FlagRecHandle);
+void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecNotification *FlagRecHandle);
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId);

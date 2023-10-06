@@ -1,34 +1,98 @@
-15:39:28 **** Incremental Build of configuration Debug for project CAN_Goft ****
+14:28:18 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Network':
+../CANlibrary/CAN_OSI.c:232:1: warning: control reaches end of non-void function [-Wreturn-type]
+  232 | }
+      | ^
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10796	     20	   1684	  12500	   30d4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+14:28:24 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
 arm-none-eabi-size   CAN_Goft.elf 
    text	   data	    bss	    dec	    hex	filename
-  10628	     20	   1684	  12332	   302c	CAN_Goft.elf
+  10796	     20	   1684	  12500	   30d4	CAN_Goft.elf
 Finished building: default.size.stdout
  
-15:39:34 **** Incremental Build of configuration Debug for project CAN_Goft ****
+14:32:10 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Network':
+../CANlibrary/CAN_OSI.c:232:1: warning: control reaches end of non-void function [-Wreturn-type]
+  232 | }
+      | ^
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
 arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  10628	     20	   1684	  12332	   302c	CAN_Goft.elf
+  10788	     20	   1684	  12492	   30cc	CAN_Goft.elf
 Finished building: default.size.stdout
  
-15:47:36 **** Incremental Build of configuration Debug for project CAN_Goft ****
+Finished building: CAN_Goft.list
+ 
+14:35:23 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Network':
+../CANlibrary/CAN_OSI.c:235:1: warning: control reaches end of non-void function [-Wreturn-type]
+  235 | }
+      | ^
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10828	     20	   1684	  12532	   30f4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+14:36:48 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Network':
+../CANlibrary/CAN_OSI.c:235:1: warning: control reaches end of non-void function [-Wreturn-type]
+  235 | }
+      | ^
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
+arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
+   text	   data	    bss	    dec	    hex	filename
+  10836	     20	   1684	  12540	   30fc	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_Goft.list
+ 
+15:07:45 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../CANlibrary/CAN_Init.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_Init.d" -MT"CANlibrary/CAN_Init.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_Init.o"
 arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
 ../Core/Src/main.c: In function 'main':
 ../Core/Src/main.c:109:3: warning: implicit declaration of function 'FlagsFrameHandle_Init' [-Wimplicit-function-declaration]
   109 |   FlagsFrameHandle_Init(&Flag);
       |   ^~~~~~~~~~~~~~~~~~~~~
 ../Core/Src/main.c:135:42: warning: pointer targets in passing argument 2 of 'CAN_Send_Physical_Send' differ in signedness [-Wpointer-sign]
-  135 |          CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
+  135 |          CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);
       |                                          ^~~~
       |                                          |
       |                                          char *
 In file included from ../Core/Src/main.c:20:
-../CANlibrary/CAN_OSI.h:98:74: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
-   98 | uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+../CANlibrary/CAN_OSI.h:100:74: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+  100 | uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
       |                                                                 ~~~~~~~~~^~~~
 ../Core/Src/main.c:112:11: warning: unused variable 'mess' [-Wunused-variable]
   112 |   uint8_t mess[30]={0};
@@ -36,63 +100,69 @@ In file included from ../Core/Src/main.c:20:
 ../Core/Src/main.c:110:11: warning: unused variable 'DataRec' [-Wunused-variable]
   110 |   uint8_t DataRec[16];
       |           ^~~~~~~
-../Core/Src/main.c:107:19: warning: unused variable 'FlagRec' [-Wunused-variable]
-  107 |   FlagRecDataEnum FlagRec;
-      |                   ^~~~~~~
+../Core/Src/main.c:107:23: warning: unused variable 'FlagRec' [-Wunused-variable]
+  107 |   FlagRecNotification FlagRec;
+      |                       ^~~~~~~
 ../Core/Src/main.c:106:23: warning: unused variable 'RxHeader' [-Wunused-variable]
   106 |   CAN_RxHeaderTypeDef RxHeader;
       |                       ^~~~~~~~
-../Core/Src/main.c:135:10: warning: 'Txmailbox' is used uninitialized [-Wuninitialized]
-  135 |          CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: CAN_Goft.elf
- 
-arm-none-eabi-size   CAN_Goft.elf 
-arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
-   text	   data	    bss	    dec	    hex	filename
-  10260	     20	   1684	  11964	   2ebc	CAN_Goft.elf
-Finished building: default.size.stdout
- 
-Finished building: CAN_Goft.list
- 
-15:48:12 **** Incremental Build of configuration Debug for project CAN_Goft ****
-make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:109:3: warning: implicit declaration of function 'FlagsFrameHandle_Init' [-Wimplicit-function-declaration]
-  109 |   FlagsFrameHandle_Init(&Flag);
-      |   ^~~~~~~~~~~~~~~~~~~~~
-../Core/Src/main.c:112:11: warning: unused variable 'mess' [-Wunused-variable]
-  112 |   uint8_t mess[30]={0};
-      |           ^~~~
-../Core/Src/main.c:111:8: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
-  111 |   char Data[64]={0};
-      |        ^~~~
-../Core/Src/main.c:110:11: warning: unused variable 'DataRec' [-Wunused-variable]
-  110 |   uint8_t DataRec[16];
-      |           ^~~~~~~
-../Core/Src/main.c:101:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
-  101 |   CANConfigIDTxtypedef pIDtype;
-      |                        ^~~~~~~
+../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Network':
 ../Core/Src/main.c:100:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
   100 |   uint32_t Txmailbox;
       |            ^~~~~~~~~
+../CANlibrary/CAN_OSI.c:236:1: warning: control reaches end of non-void function [-Wreturn-type]
+  236 | }
+      | ^
 arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: CAN_Goft.elf
  
 arm-none-eabi-size   CAN_Goft.elf 
 arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  10916	     20	   1684	  12620	   314c	CAN_Goft.elf
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
 Finished building: default.size.stdout
  
 Finished building: CAN_Goft.list
  
-15:48:57 **** Incremental Build of configuration Debug for project CAN_Goft ****
+15:08:04 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
 arm-none-eabi-size   CAN_Goft.elf 
    text	   data	    bss	    dec	    hex	filename
-  10916	     20	   1684	  12620	   314c	CAN_Goft.elf
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+15:08:11 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+15:08:19 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+15:08:32 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+15:08:50 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
+Finished building: default.size.stdout
+ 
+15:10:26 **** Incremental Build of configuration Debug for project CAN_Goft ****
+make -j8 all 
+arm-none-eabi-size   CAN_Goft.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10252	     20	   1684	  11956	   2eb4	CAN_Goft.elf
 Finished building: default.size.stdout
  

@@ -100,11 +100,11 @@ int main(void)
   uint32_t Txmailbox;
   CANConfigIDTxtypedef pIDtype;
   pIDtype.MessageType=COMMAND_FRAME;
-  pIDtype.SenderID=OBSTALCE8;
+  pIDtype.SenderID=OBSTALCE1;
   CANBufferHandleStruct Buffer;
   CANBufferHandleStruct_Init(&Buffer);
   CAN_RxHeaderTypeDef RxHeader;
-  FlagRecDataEnum FlagRec;
+  FlagRecNotification FlagRec;
   FlagFrameHandle Flag;
   FlagsFrameHandle_Init(&Flag);
   uint8_t DataRec[16];
@@ -132,10 +132,10 @@ int main(void)
 	 // CAN_DataLink_Separate(&Buffer,Data,9);
 	//	CAN_Network_Packet(&Buffer,Data,62);
 	 HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-	 //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
+	 CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);
 	// CAN_Recieve_Physical(&RxBuffer,DataRec);
 	 //HAL_UART_Transmit( &huart1, DataRec, sizeof(DataRec), HAL_MAX_DELAY);
-	 CAN_Receive_DataLink(&RxHeader,&Flag,&Buffer,&FlagRec);
+	 //CAN_Receive_DataLink(&RxHeader,&Flag,&Buffer,&FlagRec);
 	//CAN_Send_Response(0b1111, ACK, 0b010);
 	 HAL_Delay(500);
   }
