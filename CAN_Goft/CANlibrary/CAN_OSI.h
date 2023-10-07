@@ -6,7 +6,7 @@
 #define TIMEOUT_MS 5000
 #define SIZE_FRAME_DATA						0X08
 #define FILL_VALUE 							(0x55)
-#define DATA_TEST							16
+#define DATA_TEST							62
 #define CAN_MAX_DATA						8
 
 #define Node_Number							16
@@ -91,8 +91,9 @@ typedef struct {
 	uint16_t SenderID;
 } CANConfigIDTxtypedef;
 
-uint32_t CAN_Config_filtering(void);
+uint32_t CAN_Config_filtering(uint8_t FIFO);
 uint16_t CAN_Send_Response(uint8_t ID,uint8_t Opcode,uint8_t FrameType);
+uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength);
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength,CANConfigIDTxtypedef *pStID);
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
@@ -104,7 +105,8 @@ uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct 
 uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification);
 uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		FlagFrameHandle *NetworkFlag,FlagRecNotification *FlagNotiHandle);
-
+uint8_t CAN_Recieve_Physical_FIFO0(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data);
+uint8_t CAN_Recieve_Physical_FIFO1(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data);
 void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecNotification *FlagRecHandle);
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);

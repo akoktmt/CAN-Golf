@@ -6,8 +6,9 @@
 ../CANlibrary/CAN_OSI.c:94:9:CAN_Send_DataLink_Separate	40	static
 ../CANlibrary/CAN_OSI.c:117:9:CAN_Send_Physical_Send	64	static
 ../CANlibrary/CAN_OSI.c:155:9:CAN_Store_Data	32	static
-../CANlibrary/CAN_OSI.c:174:9:CAN_Recieve_Physical	16	static
-../CANlibrary/CAN_OSI.c:184:9:CAN_Receive_DataLink	72	static
-../CANlibrary/CAN_OSI.c:220:9:CAN_Receive_Network	40	static
-../CANlibrary/CAN_OSI.c:264:9:CAN_Receive_Application	32	static
-../CANlibrary/CAN_OSI.c:274:10:CAN_Config_filtering	48	static
+../CANlibrary/CAN_OSI.c:174:9:CAN_Recieve_Physical_FIFO0	16	static
+../CANlibrary/CAN_OSI.c:184:9:CAN_Recieve_Physical_FIFO1	16	static
+../CANlibrary/CAN_OSI.c:193:9:CAN_Receive_DataLink	72	static
+../CANlibrary/CAN_OSI.c:229:9:CAN_Receive_Network	40	static
+../CANlibrary/CAN_OSI.c:273:9:CAN_Receive_Application	32	static
+../CANlibrary/CAN_OSI.c:283:10:CAN_Config_filtering	56	static
