@@ -125,7 +125,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   //CAN_Physical_Send(&Buffer, Data , 10 , &pIDtype, Txmailbox);
   //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype, Txmailbox);
-  CAN_Send_Application(&Buffer, &pIDtype, Data,DATA_TEST);
+  //CAN_Send_Application(&Buffer, &pIDtype, Data,DATA_TEST);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -134,6 +134,7 @@ int main(void)
 	  //CAN_Send_Dataframe(pIDtype, Data, Txmailbox, TxBufferSend)
 	  //CAN_Send_DataLink_Separate(&Buffer, Data);
 	 // CAN_DataLink_Separate(&Buffer,Data,9);
+	  //CAN_Send_Application(&Buffer, &pIDtype, Data,DATA_TEST);
 	//	CAN_Network_Packet(&Buffer,Data,62);
 	// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 	 //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);

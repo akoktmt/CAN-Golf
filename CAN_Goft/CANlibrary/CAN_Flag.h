@@ -38,6 +38,8 @@ typedef struct
 
 typedef struct{
 	FlagIdHandle FlagID[16];
+	uint8_t ID;
+	uint8_t NumberOfFrame;
 	union {
      struct {
     	 	uint8_t Flag_Frame_0:1;
