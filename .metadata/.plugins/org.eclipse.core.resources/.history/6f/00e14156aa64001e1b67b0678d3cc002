@@ -2,6 +2,7 @@
 #include <string.h>
 #include "CRC.h"
 #include "CAN_Flag.h"
+#include <stdlib.h>
 extern CAN_HandleTypeDef hcan;
 
 uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
@@ -33,15 +34,14 @@ void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID,
 			== RxBuffer->NodeHandle[ID].NumberOfFrame) {
 		if (FlagHandle->FlagID[ID].SumOfFlag
 				== RxBuffer->NodeHandle[ID].NumberOfFrame) {
-			if (*FlagRecHandle == REC_SUCCESS) {
-				RxBuffer->NodeHandle[ID].NodeIndex = 0;
-				RxBuffer->NodeHandle[ID].DuplicateFrame = 0;
-				FlagHandle->FlagID[ID].SumOfFlag = 0;
-				for (FrameType = 0;
-						FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
-						FrameType++) {
-					FlagHandle->FlagID[ID].FlagFrameFull[FrameType] = 0;
-				}
+			*FlagRecHandle = REC_FRAMEDATA_SUCCESS;
+			RxBuffer->NodeHandle[ID].NodeIndex = 0;
+			RxBuffer->NodeHandle[ID].DuplicateFrame = 0;
+			FlagHandle->FlagID[ID].SumOfFlag = 0;
+			for (FrameType = 0;
+					FrameType < RxBuffer->NodeHandle[ID].NumberOfFrame;
+					FrameType++) {
+				FlagHandle->FlagID[ID].FlagFrameFull[FrameType] = 0;
 			}
 		} else {
 			*FlagRecHandle = REC_FRAMEDATA_ERROR;
@@ -69,8 +69,13 @@ void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 	}
 }
 
+uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength)
+{
+	CAN_Send_Network_Packet(AppBuffer, Data, DataLength,pStID);
+}
+
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength) {
+		uint8_t DataLength,CANConfigIDTxtypedef *pStID) {
 	TxBuffer->PacketDataLength = DataLength + 2;
 	TxBuffer->CRCValue = crc_8(Data, DataLength);
 	TxBuffer->Buffer_Index = DataLength;
@@ -84,11 +89,11 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 			TxBuffer->PacketDataLength;
 	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = TxBuffer->CRCValue;
 	TxBuffer->Buffer_Index = 0;
+	CAN_Send_DataLink_Separate(TxBuffer, Data, pStID);
 	return HAL_OK;
 }
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data) {
-	CAN_Send_Network_Packet(TxBuffer, Data, DATA_TEST);
+		uint8_t *Data,CANConfigIDTxtypedef *pStID) {
 	uint8_t PacketLength = TxBuffer->PacketDataLength;
 	uint8_t NumberOfFrame = TxBuffer->NumberOfFrame;
 	TxBuffer->Buffer[NumberOfFrame - 1][6] = PacketLength;
@@ -108,10 +113,10 @@ uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		}
 	}
 	TxBuffer->Buffer_Index = 0;
+	CAN_Send_Physical_Send(TxBuffer,*Data,pStID);
 	return HAL_OK;
 }
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype) {
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype) {
 
 	CAN_Send_DataLink_Separate(TxBuffer, Data);
 	uint32_t Txmailbox;
@@ -179,19 +184,19 @@ uint8_t CAN_Recieve_Physical(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
 	return HAL_OK;
 }
 
-uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
-		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
+uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecNotification *FlagNotiHandle) {
-
+	CAN_RxHeaderTypeDef RxHeader;
+	*FlagNotiHandle = REC_DATA;
 	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical for get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
 
-	CAN_Recieve_Physical(RxHeader, DataPhysical); // get Data
+	CAN_Recieve_Physical(&RxHeader, DataPhysical); // get Data
 
-	StdID = RxHeader->StdId;
+	StdID = RxHeader.StdId;
 	ID = (StdID >> 3) & 15;
-	RxBuffer->RecvID=ID;
+	RxBuffer->RecvID = ID;
 	RxBuffer->NodeHandle[ID].FrameType = StdID & 7; // get frame type store into Rxbuffer struct with Node ID manage frame type
 	if (RxBuffer->NodeHandle[ID].FrameType == SET_UP_FRAME
 			&& RxBuffer->NodeHandle[ID].DuplicateFrame != 1) { // check if frame type = SET_UP_FRAME
@@ -207,28 +212,67 @@ uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
 		}
 	} else {
 		if (RxBuffer->NodeHandle[ID].FrameType == SET_UP_FRAME) {
-			*FlagNotiHandle=REC_FRAMEDATA_ERROR;
-			FlagHandle->FlagID[ID].FrameError[RxBuffer->NodeHandle[ID].FrameType] = 1;
+			*FlagNotiHandle = REC_FRAMEDATA_ERROR;
+			FlagHandle->FlagID[ID].FrameError[RxBuffer->NodeHandle[ID].FrameType] =
+					1;
 		}
 	}
 	CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagNotiHandle);
-	CAN_Receive_Network(RxBuffer, FlagHandle,FlagNotiHandle);
 	return HAL_OK;
 }
 uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
-		FlagFrameHandle *NetworkFlag,FlagRecNotification *FlagNotiHandle) {
-	uint8_t FrameType =0;
-	uint8_t NetBufferIndex=0;
-	FrameType=NetBuffer->NodeHandle[NetBuffer->RecvID].FrameType;
-	if(*FlagNotiHandle=REC_SUCCESS)
-	{
-		for(FrameType; FrameType >=0;FrameType--)
-		{
-		memcpy(NetBuffer->Buffer[NetBufferIndex],NetBuffer->NodeHandle[NetBuffer->RecvID].NodeBuffer[FrameType])
-		NetBufferIndex++;
+		FlagFrameHandle *NetworkFlag, FlagRecNotification *FlagNotiHandle) {
+	CAN_Receive_DataLink(NetworkFlag, NetBuffer, FlagNotiHandle);
+	uint8_t FrameLength = 0;
+	uint8_t FrameType = 0;
+	uint8_t NetBufferIndex = 0;
+	uint8_t DataLength=0;
+	uint8_t CRCValue=0;
+	uint8_t *NetData;
+	FrameLength = NetBuffer->NodeHandle[NetBuffer->RecvID].NumberOfFrame;
+	uint8_t NumberofFrame =FrameLength;
+	FrameType = NetBuffer->NodeHandle[NetBuffer->RecvID].FrameType;
+	if (*FlagNotiHandle == REC_FRAMEDATA_SUCCESS) {
+		for (;FrameLength > 0; FrameLength--) {
+			memcpy(NetBuffer->Buffer[NetBufferIndex],
+					NetBuffer->NodeHandle[NetBuffer->RecvID].NodeBuffer[FrameType],
+					CAN_MAX_DATA);
+			NetBufferIndex++;
+			FrameType--;
 		}
+		DataLength=NetBuffer->NodeHandle[NetBuffer->RecvID].PacketLength-2;
+		NetData=(uint8_t*)malloc(DataLength*sizeof(uint8_t));
+		for(NetBufferIndex=0;NetBufferIndex<=NumberofFrame;NetBufferIndex++)
+		{
+			for (int j=0;j<8;j++)
+			{
+				NetData[NetBufferIndex*8+j]=NetBuffer->Buffer[NetBufferIndex][j];
+			}
+		}
+		CRCValue=crc_8(NetData,DataLength);
+		if(CRCValue==NetBuffer->NodeHandle[NetBuffer->RecvID].CRCValue)
+		{
+			*FlagNotiHandle=REC_PACKET_SUCCESS;
+			memcpy(NetBuffer->NetworkBuffer,NetData,DataLength);
+		}
+		else
+		{
+			*FlagNotiHandle=REC_PACKET_ERROR;
+		}
+		free(NetData);
 	}
+	return HAL_OK;
+}
 
+uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification)
+{
+	uint8_t AppDataLength=AppBuffer->NodeHandle[AppBuffer->RecvID].PacketLength-2;
+	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
+	if(*FlagNotification=REC_PACKET_SUCCESS)
+	{
+	memcpy(Data,AppBuffer->NetworkBuffer,AppDataLength);
+	}
+	return HAL_OK;
 }
 uint32_t CAN_Config_filtering(void) {
 	CAN_FilterTypeDef Can_filter_init;

@@ -69,13 +69,8 @@ void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 	}
 }
 
-uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength)
-{
-	return CAN_Send_Network_Packet(AppBuffer, Data, DataLength,pStID);
-}
-
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength,CANConfigIDTxtypedef *pStID) {
+		uint8_t DataLength) {
 	TxBuffer->PacketDataLength = DataLength + 2;
 	TxBuffer->CRCValue = crc_8(Data, DataLength);
 	TxBuffer->Buffer_Index = DataLength;
@@ -89,10 +84,11 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 			TxBuffer->PacketDataLength;
 	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = TxBuffer->CRCValue;
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_DataLink_Separate(TxBuffer, Data, pStID);
+	return HAL_OK;
 }
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data,CANConfigIDTxtypedef *pStID) {
+		uint8_t *Data) {
+	CAN_Send_Network_Packet(TxBuffer, Data, DATA_TEST);
 	uint8_t PacketLength = TxBuffer->PacketDataLength;
 	uint8_t NumberOfFrame = TxBuffer->NumberOfFrame;
 	TxBuffer->Buffer[NumberOfFrame - 1][6] = PacketLength;
@@ -112,10 +108,12 @@ uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		}
 	}
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_Physical_Send(TxBuffer,Data,pStID);
+	return HAL_OK;
 }
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype) {
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype) {
 
+	CAN_Send_DataLink_Separate(TxBuffer, Data);
 	uint32_t Txmailbox;
 	CAN_TxHeaderTypeDef Txheader;
 
@@ -250,7 +248,7 @@ uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		if(CRCValue==NetBuffer->NodeHandle[NetBuffer->RecvID].CRCValue)
 		{
 			*FlagNotiHandle=REC_PACKET_SUCCESS;
-			memcpy(NetBuffer->NetworkBuffer,NetData,DataLength);
+			memcpy(NetBuffer->NetworkBuffer,NetData,sizeof(NetData));
 		}
 		else
 		{
@@ -263,13 +261,8 @@ uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 
 uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification)
 {
-	uint8_t AppDataLength=AppBuffer->NodeHandle[AppBuffer->RecvID].PacketLength-2;
 	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
-	if(*FlagNotification==REC_PACKET_SUCCESS)
-	{
-	memcpy(Data,AppBuffer->NetworkBuffer,AppDataLength);
-	}
-	return HAL_OK;
+	memcpy(Data,AppBuffer->NetworkBuffer,sizeof(Data));
 }
 uint32_t CAN_Config_filtering(void) {
 	CAN_FilterTypeDef Can_filter_init;

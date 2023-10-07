@@ -97,7 +97,8 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength,CANConfigIDTxtypedef *pStID);
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		uint8_t *Data,CANConfigIDTxtypedef *pStID);
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype);
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype);
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecNotification *FlagNotiHandle);

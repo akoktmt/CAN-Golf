@@ -69,13 +69,8 @@ void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 	}
 }
 
-uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength)
-{
-	return CAN_Send_Network_Packet(AppBuffer, Data, DataLength,pStID);
-}
-
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength,CANConfigIDTxtypedef *pStID) {
+		uint8_t DataLength) {
 	TxBuffer->PacketDataLength = DataLength + 2;
 	TxBuffer->CRCValue = crc_8(Data, DataLength);
 	TxBuffer->Buffer_Index = DataLength;
@@ -89,10 +84,11 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 			TxBuffer->PacketDataLength;
 	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = TxBuffer->CRCValue;
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_DataLink_Separate(TxBuffer, Data, pStID);
+	return HAL_OK;
 }
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data,CANConfigIDTxtypedef *pStID) {
+		uint8_t *Data) {
+	CAN_Send_Network_Packet(TxBuffer, Data, DATA_TEST);
 	uint8_t PacketLength = TxBuffer->PacketDataLength;
 	uint8_t NumberOfFrame = TxBuffer->NumberOfFrame;
 	TxBuffer->Buffer[NumberOfFrame - 1][6] = PacketLength;
@@ -112,10 +108,12 @@ uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		}
 	}
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_Physical_Send(TxBuffer,Data,pStID);
+	return HAL_OK;
 }
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype) {
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype) {
 
+	CAN_Send_DataLink_Separate(TxBuffer, Data);
 	uint32_t Txmailbox;
 	CAN_TxHeaderTypeDef Txheader;
 
@@ -181,17 +179,18 @@ uint8_t CAN_Recieve_Physical(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
 	return HAL_OK;
 }
 
-uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
+uint8_t CAN_Receive_DataLink(CAN_RxHeaderTypeDef *RxHeader,
+		FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecNotification *FlagNotiHandle) {
-	CAN_RxHeaderTypeDef RxHeader;
+
 	*FlagNotiHandle = REC_DATA;
 	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical for get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
 
-	CAN_Recieve_Physical(&RxHeader, DataPhysical); // get Data
+	CAN_Recieve_Physical(RxHeader, DataPhysical); // get Data
 
-	StdID = RxHeader.StdId;
+	StdID = RxHeader->StdId;
 	ID = (StdID >> 3) & 15;
 	RxBuffer->RecvID = ID;
 	RxBuffer->NodeHandle[ID].FrameType = StdID & 7; // get frame type store into Rxbuffer struct with Node ID manage frame type
@@ -215,11 +214,11 @@ uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct 
 		}
 	}
 	CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagNotiHandle);
+	CAN_Receive_Network(RxBuffer, FlagHandle, FlagNotiHandle);
 	return HAL_OK;
 }
 uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		FlagFrameHandle *NetworkFlag, FlagRecNotification *FlagNotiHandle) {
-	CAN_Receive_DataLink(NetworkFlag, NetBuffer, FlagNotiHandle);
 	uint8_t FrameLength = 0;
 	uint8_t FrameType = 0;
 	uint8_t NetBufferIndex = 0;
@@ -250,24 +249,12 @@ uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		if(CRCValue==NetBuffer->NodeHandle[NetBuffer->RecvID].CRCValue)
 		{
 			*FlagNotiHandle=REC_PACKET_SUCCESS;
-			memcpy(NetBuffer->NetworkBuffer,NetData,DataLength);
 		}
 		else
 		{
 			*FlagNotiHandle=REC_PACKET_ERROR;
 		}
 		free(NetData);
-	}
-	return HAL_OK;
-}
-
-uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification)
-{
-	uint8_t AppDataLength=AppBuffer->NodeHandle[AppBuffer->RecvID].PacketLength-2;
-	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
-	if(*FlagNotification==REC_PACKET_SUCCESS)
-	{
-	memcpy(Data,AppBuffer->NetworkBuffer,AppDataLength);
 	}
 	return HAL_OK;
 }

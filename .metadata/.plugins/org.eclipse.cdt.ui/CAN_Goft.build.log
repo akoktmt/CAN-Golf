@@ -1,10 +1,17 @@
-22:32:57 **** Incremental Build of configuration Debug for project CAN_Goft ****
+07:45:10 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Goft.elf
+ 
 arm-none-eabi-size   CAN_Goft.elf 
+arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  11852	    100	   2012	  13964	   368c	CAN_Goft.elf
+  11960	    100	   2012	  14072	   36f8	CAN_Goft.elf
 Finished building: default.size.stdout
  
+Finished building: CAN_Goft.list
+ 
 
-22:32:57 Build Finished. 0 errors, 0 warnings. (took 403ms)
+07:45:12 Build Finished. 0 errors, 0 warnings. (took 1s.568ms)
 

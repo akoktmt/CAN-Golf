@@ -69,10 +69,10 @@ void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 	}
 }
 
-uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength)
-{
-	return CAN_Send_Network_Packet(AppBuffer, Data, DataLength,pStID);
-}
+//uint8_t CAN_Send_Application(CANBufferHandleStruct *AppBuffer,CANConfigIDTxtypedef *pStID,uint8_t *Data,uint8_t DataLength)
+//{
+//	CAN_Send_Network_Packet(AppBuffer, Data, DataLength);
+//}
 
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		uint8_t DataLength,CANConfigIDTxtypedef *pStID) {
@@ -89,10 +89,11 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 			TxBuffer->PacketDataLength;
 	TxBuffer->NetworkBuffer[TxBuffer->Buffer_Index + 1] = TxBuffer->CRCValue;
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_DataLink_Separate(TxBuffer, Data, pStID);
+	return HAL_OK;
 }
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data,CANConfigIDTxtypedef *pStID) {
+		uint8_t *Data) {
+	CAN_Send_Network_Packet(TxBuffer, Data, DATA_TEST);
 	uint8_t PacketLength = TxBuffer->PacketDataLength;
 	uint8_t NumberOfFrame = TxBuffer->NumberOfFrame;
 	TxBuffer->Buffer[NumberOfFrame - 1][6] = PacketLength;
@@ -112,10 +113,12 @@ uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		}
 	}
 	TxBuffer->Buffer_Index = 0;
-	return CAN_Send_Physical_Send(TxBuffer,Data,pStID);
+	return HAL_OK;
 }
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype) {
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype) {
 
+	CAN_Send_DataLink_Separate(TxBuffer, Data);
 	uint32_t Txmailbox;
 	CAN_TxHeaderTypeDef Txheader;
 
@@ -265,7 +268,7 @@ uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,F
 {
 	uint8_t AppDataLength=AppBuffer->NodeHandle[AppBuffer->RecvID].PacketLength-2;
 	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
-	if(*FlagNotification==REC_PACKET_SUCCESS)
+	if(*FlagNotification=REC_PACKET_SUCCESS)
 	{
 	memcpy(Data,AppBuffer->NetworkBuffer,AppDataLength);
 	}

@@ -94,10 +94,11 @@ typedef struct {
 uint32_t CAN_Config_filtering(void);
 uint16_t CAN_Send_Response(uint8_t ID,uint8_t Opcode,uint8_t FrameType);
 uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
-		uint8_t DataLength,CANConfigIDTxtypedef *pStID);
+		uint8_t DataLength);
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
-		uint8_t *Data,CANConfigIDTxtypedef *pStID);
-uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype);
+		uint8_t *Data);
+uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
+		uint8_t DataLength, CANConfigIDTxtypedef *pIDtype);
 uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecNotification *FlagNotiHandle);

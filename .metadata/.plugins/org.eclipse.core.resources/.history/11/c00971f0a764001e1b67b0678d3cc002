@@ -132,7 +132,11 @@ int main(void)
 	 // CAN_DataLink_Separate(&Buffer,Data,9);
 	//	CAN_Network_Packet(&Buffer,Data,62);
 	 HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-	 //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);
+	 CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);
+	// CAN_Recieve_Physical(&RxBuffer,DataRec);
+	 //HAL_UART_Transmit( &huart1, DataRec, sizeof(DataRec), HAL_MAX_DELAY);
+	 //CAN_Receive_DataLink(&RxHeader,&Flag,&Buffer,&FlagRec);
+	//CAN_Send_Response(0b1111, ACK, 0b010);
 	 CAN_Receive_Application(&Buffer, mess, &Flag, &FlagRec);
 	 HAL_Delay(500);
   }
