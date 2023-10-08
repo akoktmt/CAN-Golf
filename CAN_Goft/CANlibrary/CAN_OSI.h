@@ -99,7 +99,6 @@ uint8_t CAN_Send_Network_Packet(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 		uint8_t *Data,CANConfigIDTxtypedef *pStID);
 uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,CANConfigIDTxtypedef *pIDtype);
-uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID);
 uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct *RxBuffer,
 		FlagRecNotification *FlagNotiHandle);
 uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification);
@@ -110,6 +109,8 @@ uint8_t CAN_Recieve_Physical_FIFO1(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data)
 void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecNotification *FlagRecHandle);
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);
+void CAN_Handle_Receive_Flow(CANBufferHandleStruct *Buffer ,CANConfigIDTxtypedef *pIDType,CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data);
+void CAN_Receive_Response(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data);
 void CAN_TXHeaderConfig(CAN_TxHeaderTypeDef *Txheader, uint32_t StdId);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);
 void CANBufferHandleStruct_Init(CANBufferHandleStruct *TxBuffer);

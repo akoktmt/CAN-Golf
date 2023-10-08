@@ -1,44 +1,10 @@
-15:02:16 **** Incremental Build of configuration Debug for project CAN_Goft ****
+17:43:42 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:115:12: warning: unused variable 'cnt' [-Wunused-variable]
-  115 |   uint32_t cnt=0;
-      |            ^~~
-../Core/Src/main.c:114:11: warning: unused variable 'Len' [-Wunused-variable]
-  114 |   uint8_t Len=0;
-      |           ^~~
-../Core/Src/main.c:113:11: warning: unused variable 'mess' [-Wunused-variable]
-  113 |   uint8_t mess[100]={0};
-      |           ^~~~
-../Core/Src/main.c:111:11: warning: unused variable 'DataRec' [-Wunused-variable]
-  111 |   uint8_t DataRec[16];
-      |           ^~~~~~~
-../Core/Src/main.c:108:23: warning: unused variable 'FlagRec' [-Wunused-variable]
-  108 |   FlagRecNotification FlagRec;
-      |                       ^~~~~~~
-../Core/Src/main.c:107:23: warning: unused variable 'RxHeader' [-Wunused-variable]
-  107 |   CAN_RxHeaderTypeDef RxHeader;
-      |                       ^~~~~~~~
-../Core/Src/main.c:101:12: warning: unused variable 'Txmailbox' [-Wunused-variable]
-  101 |   uint32_t Txmailbox;
-      |            ^~~~~~~~~
-../CANlibrary/CAN_OSI.c: In function 'CAN_Receive_Application':
-../CANlibrary/CAN_OSI.c:293:9: warning: implicit declaration of function 'CAN_Monitor_Flow' [-Wimplicit-function-declaration]
-  293 |         CAN_Monitor_Flow(FlagNotification, FlagFrame);
-      |         ^~~~~~~~~~~~~~~~
-arm-none-eabi-gcc -o "CAN_Goft.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Goft\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Goft.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: CAN_Goft.elf
- 
 arm-none-eabi-size   CAN_Goft.elf 
-arm-none-eabi-objdump -h -S  CAN_Goft.elf  > "CAN_Goft.list"
    text	   data	    bss	    dec	    hex	filename
-  10156	     20	   1684	  11860	   2e54	CAN_Goft.elf
+   8692	     20	   1684	  10396	   289c	CAN_Goft.elf
 Finished building: default.size.stdout
  
-Finished building: CAN_Goft.list
- 
 
-15:02:18 Build Finished. 0 errors, 8 warnings. (took 2s.366ms)
+17:43:43 Build Finished. 0 errors, 0 warnings. (took 293ms)
 

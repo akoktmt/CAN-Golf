@@ -5,31 +5,19 @@
 #include <stdlib.h>
 extern CAN_HandleTypeDef hcan;
 
-uint8_t CAN_Monitor_Flow(FlagRecNotification *FlagNoti,FlagFrameHandle *FlagHandle) {
-
-	switch(*FlagNoti)
-	{
-		case REC_DATA:
-			break;
-		case REC_FRAMEDATA_ERROR:
+void CAN_Monitor_Flow(FlagRecNotification *FlagNoti,FlagFrameHandle *FlagHandle) {
+	if(*FlagNoti==REC_FRAMEDATA_ERROR){
 			for(uint8_t FrameType=0; FrameType<FlagHandle->NumberOfFrame;FrameType++)
 			{
-				if(FlagHandle->FlagID.FrameError[FrameType]==1)
+				if(FlagHandle->FlagID[FlagHandle->ID].FrameError[FrameType]==1)
 				{
 					CAN_Send_Response(FlagHandle->ID,FRAME_ERROR,FrameType);
 				}
 			}
-			break;
-		case REC_FRAMEDATA_SUCCESS:
-			break;
-		case REC_PACKET_ERROR:
+	}
+	if(*FlagNoti==REC_PACKET_ERROR){
 			CAN_Send_Response(FlagHandle->ID,PACKET_ERROR,0x55);
-			break;
-		case REC_PACKET_SUCCESS:
-			break;
-		case REC_SUCCESS:
-			break;
-		default:
+
 	}
 }
 uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
@@ -49,6 +37,36 @@ uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
 	return HAL_OK;
 }
 
+void CAN_Receive_Response(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data)
+{
+	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO1) == 0)
+			;
+		if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO1, RxHeader, Data) != HAL_OK) {
+			Error_Handler(); //get message from RAM;
+		}
+}
+void CAN_Handle_Receive_Flow(CANBufferHandleStruct *Buffer ,CANConfigIDTxtypedef *pIDType,CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data)
+{
+	CAN_TxHeaderTypeDef TxHeader;
+	uint32_t Txmailbox;
+	CAN_Receive_Response(RxHeader,Data);
+	uint8_t StId=0;
+	StId = (StId << 3) | Buffer->FrameType_Index;
+	StId= (Buffer->SenderID <<3)|Data[1];
+	if(Data[0]==FRAME_ERROR)
+	{
+		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader,Buffer->Buffer[Data[1]] , &Txmailbox)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			while (HAL_CAN_IsTxMessagePending(&hcan, Txmailbox))
+				;
+	}
+	if(Data[0]==PACKET_ERROR)
+	{
+		CAN_Send_Physical_Send(Buffer, Data, pIDType);
+	}
+}
 void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical,
 		FlagRecNotification *FlagRecHandle) {
@@ -145,10 +163,8 @@ uint8_t CAN_Send_DataLink_Separate(CANBufferHandleStruct *TxBuffer,
 }
 uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		CANConfigIDTxtypedef *pIDtype) {
-
 	uint32_t Txmailbox;
 	CAN_TxHeaderTypeDef Txheader;
-
 	uint8_t Message_ID = pIDtype->MessageType;
 	uint8_t Sender_ID = pIDtype->SenderID;
 	uint8_t FrameType = TxBuffer->FrameType_Index;
@@ -157,13 +173,12 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 
 	StdId |= Message_ID;
 	StdId = (StdId << 4) | Sender_ID;
+	TxBuffer->SenderID=StdId;
 	StdId = (StdId << 3) | TxBuffer->FrameType_Index;
-
 	Txheader.DLC = 8;
 	Txheader.RTR = CAN_RTR_DATA;
 	Txheader.IDE = CAN_ID_STD;
 
-	CAN_Store_Data(TxBuffer, pIDtype);
 
 	for (int8_t i = NumberOfFrame - 1; i >= 0; i--) {
 		Txheader.StdId = StdId;
@@ -178,25 +193,6 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 		FrameType++;
 		StdId = (StdId << 3) | FrameType;
 
-	}
-	return HAL_OK;
-}
-
-uint8_t CAN_Store_Data(CANBufferHandleStruct *Store, CANConfigIDTxtypedef *ID) {
-	uint8_t FrameType = Store->FrameType_Index;
-	uint8_t BufferIndex = Store->Buffer_Index;
-	uint8_t NumberFrame = Store->NumberOfFrame;
-	for (int i = 0; i < NumberFrame; i++) {
-		Store->StoreData[i][BufferIndex] = ID->SenderID;
-		BufferIndex++;
-		Store->StoreData[i][BufferIndex] = FrameType;
-		BufferIndex++;
-		for (; BufferIndex < 10; BufferIndex++) {
-			Store->StoreData[i][BufferIndex] =
-					Store->Buffer[i][BufferIndex - 2];
-		}
-		FrameType++;
-		BufferIndex = 0;
 	}
 	return HAL_OK;
 }
@@ -304,10 +300,11 @@ uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer, uint8_t *Data,
 	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
 	if (*FlagNotification == REC_PACKET_SUCCESS) {
 		memcpy(Data, AppBuffer->NetworkBuffer, AppDataLength);
+		*FlagNotification =REC_SUCCESS;
 	}
-	CAN_Monitor_Flow(FlagNotification, FlagFrame);
 	return HAL_OK;
 }
+
 uint32_t CAN_Config_filtering(uint8_t FIFO) {
 	CAN_FilterTypeDef Can_filter_init;
 	Can_filter_init.FilterActivation = ENABLE;
