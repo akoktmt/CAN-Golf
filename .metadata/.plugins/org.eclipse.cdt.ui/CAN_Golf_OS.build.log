@@ -1,17 +1,33 @@
-15:11:49 **** Incremental Build of configuration Debug for project CAN_Golf_OS ****
+13:02:18 **** Build of configuration Debug for project CAN_Golf_OS ****
 make -j8 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CANlibrary -I../CRC -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'MainTask':
+../Core/Src/main.c:406:13: warning: unused variable 'Print' [-Wunused-variable]
+  406 |        char Print[88] = {0};
+      |             ^~~~~
+../Core/Src/main.c:397:14: warning: variable 'Data' set but not used [-Wunused-but-set-variable]
+  397 |      uint8_t Data[64]={0};
+      |              ^~~~
+../Core/Src/main.c:395:14: warning: unused variable 'mess' [-Wunused-variable]
+  395 |      uint8_t mess[100]={0};
+      |              ^~~~
+../Core/Src/main.c:392:26: warning: unused variable 'FlagRec' [-Wunused-variable]
+  392 |      FlagRecNotification FlagRec;
+      |                          ^~~~~~~
+../Core/Src/main.c:386:15: warning: unused variable 'Txmailbox' [-Wunused-variable]
+  386 |      uint32_t Txmailbox;
+      |               ^~~~~~~~~
 arm-none-eabi-gcc -o "CAN_Golf_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_Golf_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Golf_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: CAN_Golf_OS.elf
  
 arm-none-eabi-size   CAN_Golf_OS.elf 
 arm-none-eabi-objdump -h -S  CAN_Golf_OS.elf  > "CAN_Golf_OS.list"
    text	   data	    bss	    dec	    hex	filename
-  26092	    104	   8640	  34836	   8814	CAN_Golf_OS.elf
+  26236	    104	   8640	  34980	   88a4	CAN_Golf_OS.elf
 Finished building: default.size.stdout
  
 Finished building: CAN_Golf_OS.list
  
 
-15:11:51 Build Finished. 0 errors, 0 warnings. (took 1s.259ms)
+13:02:20 Build Finished. 0 errors, 5 warnings. (took 2s.98ms)
 

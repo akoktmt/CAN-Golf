@@ -1,0 +1,3 @@
+../CANlibrary/CAN_Init.c:10:6:CANBufferHandleStruct_Init	2
+../CANlibrary/CAN_Init.c:26:6:FlagsFrameHandle_Init	2
+../CANlibrary/CAN_Init.c:41:6:CAN_TXHeaderConfig	1

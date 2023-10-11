@@ -94,31 +94,21 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   CAN_Config_filtering(CAN_FILTER_FIFO0);
-  CAN_Config_filtering(CAN_FILTER_FIFO1);
+  //CAN_Config_filtering(CAN_FILTER_FIFO1);
+// if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_TX_MAILBOX_EMPTY|CAN_IT_RX_FIFO0_MSG_PENDING|CAN_IT_BUSOFF)!=HAL_OK)
+// {
+//	 Error_Handler();
+// }
   if(HAL_CAN_Start(&hcan)!=HAL_OK)
      {
      	Error_Handler();
      }
-  uint32_t Txmailbox;
-  CANConfigIDTxtypedef pIDtype;
-  pIDtype.MessageType=COMMAND_FRAME;
-  pIDtype.SenderID=OBSTALCE8;
   CANBufferHandleStruct Buffer;
   CANBufferHandleStruct_Init(&Buffer);
   FlagRecNotification FlagRec;
   FlagFrameHandle Flag;
   FlagsFrameHandle_Init(&Flag);
   uint8_t mess[100]={0};
-  uint8_t k=0;
-  uint8_t Data[64]={0};
-  for (int i=0; i<DATA_TEST;i++)
-    {
-  	  Data[i]=k;
-  	  k=k+1;
-    }
-  uint8_t sendData[100] = {0};
-  	  uint8_t len = 0;
-  	  uint32_t cnt = 0;
   	char Print[88] = {0};
   /* USER CODE END 2 */
 
@@ -135,22 +125,23 @@ int main(void)
 	  //CAN_Send_Dataframe(pIDtype, Data, Txmailbox, TxBufferSend)
 	  //CAN_Send_DataLink_Separate(&Buffer, Data);
 	 // CAN_DataLink_Separate(&Buffer,Data,9);
-//	  len = sprintf((char*)sendData, "From OBSTALCE8 to 2: %lu\r\n",cnt++);
-	  CAN_Send_Application(&Buffer, &pIDtype, Data,DATA_TEST);
+	 // len = sprintf((char*)sendData, "From OBSTALCE8 to 2: %d\r\n",cnt++);
+	 // CAN_Send_Application(&Buffer, &pIDtype, sendData,len+1);
+	  //CAN_Send_Error_Handle(&Buffer, &pIDtype);
 	//	CAN_Network_Packet(&Buffer,Data,62);
-	// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+	//  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 	 //CAN_Send_Physical_Send(&Buffer, Data , DATA_TEST , &pIDtype);
-//	 CAN_Receive_Application(&Buffer, mess, &Flag, &FlagRec);
-//	 if(FlagRec==REC_PACKET_SUCCESS)
-//	 {
-//		 uint8_t len = sprintf(Print, "Node 2 Rcv: %s\r\n", mess);
-//		 HAL_UART_Transmit(&huart1,(uint8_t*)Print,len,HAL_MAX_DELAY);
-//	 }
-	// HAL_Delay(500);
-  }
+	 CAN_Receive_Application(&Buffer, mess, &Flag, &FlagRec);
+//	// HAL_UART_Transmit(&huart1,mess,DATA_TEST,HAL_MAX_DELAY);
+	 if(FlagRec==REC_SUCCESS)
+	 {
+		 uint8_t len = sprintf(Print, "Node 2 Rcv: %d\r\n",mess);
+		 HAL_UART_Transmit(&huart1,Print,len,HAL_MAX_DELAY);
+	 }
+	//  HAL_Delay(300);
   /* USER CODE END 3 */
 }
-
+}
 /**
   * @brief System Clock Configuration
   * @retval None

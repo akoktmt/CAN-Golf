@@ -54,14 +54,14 @@ osThreadId_t mMainTaskHandle;
 const osThreadAttr_t mMainTask_attributes = {
   .name = "mMainTask",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityRealtime,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for mCAN_Recv */
 osThreadId_t mCAN_RecvHandle;
 const osThreadAttr_t mCAN_Recv_attributes = {
   .name = "mCAN_Recv",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for mCAN_Monitor */
 osThreadId_t mCAN_MonitorHandle;
@@ -125,11 +125,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  CAN_Config_filtering(CAN_FILTER_FIFO0);
-  if(HAL_CAN_Start(&hcan)!=HAL_OK)
-      {
-       Error_Handler();
-      }
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -382,24 +378,39 @@ static void MX_GPIO_Init(void)
 void MainTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-   CANConfigIDTxtypedef pIDtype;
-   pIDtype.MessageType=COMMAND_FRAME;
-   pIDtype.SenderID=OBSTALCE8;
-   CANBufferHandleStruct Buffer;
-   CANBufferHandleStruct_Init(&Buffer);
-   FlagFrameHandle Flag;
-   FlagsFrameHandle_Init(&Flag);
-   uint8_t sendData[100] = {0};
-   uint8_t len = 0;
-   uint32_t cnt = 0;
-
-
+  CAN_Config_filtering(CAN_FILTER_FIFO0);
+    if(HAL_CAN_Start(&hcan)!=HAL_OK)
+        {
+         Error_Handler();
+        }
+     uint32_t Txmailbox;
+     CANConfigIDTxtypedef pIDtype;
+     pIDtype.MessageType=COMMAND_FRAME;
+     pIDtype.SenderID=OBSTALCE2;
+     CANBufferHandleStruct Buffer;
+     CANBufferHandleStruct_Init(&Buffer);
+     FlagRecNotification FlagRec;
+     FlagFrameHandle Flag;
+     FlagsFrameHandle_Init(&Flag);
+     uint8_t mess[100]={0};
+     uint8_t k=0;
+     uint8_t Data[64]={0};
+     for (int i=0; i<DATA_TEST;i++)
+       {
+         Data[i]=k;
+         k=k+1;
+       }
+     uint8_t sendData[100] = {0};
+         uint8_t len = 0;
+         uint32_t cnt = 0;
+       char Print[88] = {0};
   /* Infinite loop */
   for(;;)
   {
-      len = sprintf((char*)sendData, "From OBSTALCE8 to 2: %lu\r\n",cnt++);
-     CAN_Send_Application(&Buffer, &pIDtype, sendData,len+1);
-     osDelay(1000);
+      len = sprintf((char*)sendData, "From OBSTALCE5 to 2: %lu\r\n",cnt++);
+      CAN_Send_Application(&Buffer, &pIDtype, sendData,len+1);
+
+    osDelay(1000);
   }
   /* USER CODE END 5 */
 }
@@ -414,23 +425,42 @@ void MainTask(void *argument)
 void CAN_Recv(void *argument)
 {
   /* USER CODE BEGIN CAN_Recv */
-//    CANBufferHandleStruct Buffer;
-//    CANBufferHandleStruct_Init(&Buffer);
-//    FlagRecNotification FlagRec;
-//    FlagFrameHandle Flag;
-//    FlagsFrameHandle_Init(&Flag);
-//    uint8_t mess[100]={0};
-//    char Print[88] = {0};
+//  CAN_Config_filtering(CAN_FILTER_FIFO0);
+//  if(HAL_CAN_Start(&hcan)!=HAL_OK)
+//      {
+//       Error_Handler();
+//      }
+//   uint32_t Txmailbox;
+//   CANConfigIDTxtypedef pIDtype;
+//   pIDtype.MessageType=COMMAND_FRAME;
+//   pIDtype.SenderID=OBSTALCE5;
+//   CANBufferHandleStruct Buffer;
+//   CANBufferHandleStruct_Init(&Buffer);
+//   FlagRecNotification FlagRec;
+//   FlagFrameHandle Flag;
+//   FlagsFrameHandle_Init(&Flag);
+//   uint8_t mess[100]={0};
+//   uint8_t k=0;
+//   uint8_t Data[64]={0};
+//   for (int i=0; i<DATA_TEST;i++)
+//     {
+//       Data[i]=k;
+//       k=k+1;
+//     }
+//   uint8_t sendData[100] = {0};
+//       uint8_t len = 0;
+//       uint32_t cnt = 0;
+//     char Print[88] = {0};
   /* Infinite loop */
   for(;;)
   {
 //    CAN_Receive_Application(&Buffer, mess, &Flag, &FlagRec);
-//      if(FlagRec==REC_PACKET_SUCCESS)
+//      if(FlagRec==REC_SUCCESS)
 //      {
 //        uint8_t len = sprintf(Print, "Node 2 Rcv: %s\r\n", mess);
-//        HAL_UART_Transmit(&huart1,(uint8_t*)Print,len,HAL_MAX_DELAY);
+//        HAL_UART_Transmit(&huart1,Print,len,HAL_MAX_DELAY);
 //      }
-    osDelay(1);
+   osDelay(100);
   }
   /* USER CODE END CAN_Recv */
 }

@@ -1,10 +1,48 @@
-16:14:30 **** Incremental Build of configuration Debug for project CAN_Demo ****
+16:33:13 **** Incremental Build of configuration Debug for project CAN_Demo ****
 make -j8 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc "../Core/Src/gpio.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/gpio.d" -MT"Core/Src/gpio.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/gpio.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/stm32f1xx_hal_msp.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_hal_msp.d" -MT"Core/Src/stm32f1xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f1xx_it.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_it.d" -MT"Core/Src/stm32f1xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_it.o"
+arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/tim.d" -MT"Core/Src/tim.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/tim.o"
+arm-none-eabi-gcc "../Core/Src/usart.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/usart.d" -MT"Core/Src/usart.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/usart.o"
+arm-none-eabi-gcc "../CANlibrary/CAN_Init.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_Init.d" -MT"CANlibrary/CAN_Init.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_Init.o"
+../Core/Src/can.c: In function 'HAL_CAN_RxFifo1MsgPendingCallback':
+../Core/Src/can.c:330:28: warning: passing argument 1 of 'HAL_CAN_GetRxMessage' from incompatible pointer type [-Wincompatible-pointer-types]
+  330 |   if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, rcv) != HAL_OK)
+      |                            ^~~~~
+      |                            |
+      |                            CAN_HandleTypeDef ** {aka struct __CAN_HandleTypeDef **}
+In file included from ../Core/Inc/stm32f1xx_hal_conf.h:258,
+                 from ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Inc/can.h:29,
+                 from ../Core/Src/can.c:21:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h:690:59: note: expected 'CAN_HandleTypeDef *' {aka 'struct __CAN_HandleTypeDef *'} but argument is of type 'CAN_HandleTypeDef **' {aka 'struct __CAN_HandleTypeDef **'}
+  690 | HAL_StatusTypeDef HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32_t RxFifo,
+      |                                        ~~~~~~~~~~~~~~~~~~~^~~~
+../Core/Src/can.c: In function 'CAN_Send_Test':
+../Core/Src/can.c:265:1: warning: control reaches end of non-void function [-Wreturn-type]
+  265 | }
+      | ^
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../CANlibrary/CAN_OSI.c: In function 'CAN_Send_Error_Handle':
+../CANlibrary/CAN_OSI.c:52:9: warning: 'RxHeader' is used uninitialized [-Wuninitialized]
+   52 |         CAN_Receive_Response(RxHeader,Data);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../CANlibrary/CAN_OSI.c:52:9: warning: 'Data' is used uninitialized [-Wuninitialized]
+arm-none-eabi-gcc -o "CAN_Demo.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\CAN-BOSCH-master\CAN_Demo\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_Demo.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_Demo.elf
+ 
 arm-none-eabi-size   CAN_Demo.elf 
+arm-none-eabi-objdump -h -S  CAN_Demo.elf  > "CAN_Demo.list"
    text	   data	    bss	    dec	    hex	filename
-  19940	    112	   2144	  22196	   56b4	CAN_Demo.elf
+  21328	    112	   3448	  24888	   6138	CAN_Demo.elf
 Finished building: default.size.stdout
  
+Finished building: CAN_Demo.list
+ 
 
-16:14:30 Build Finished. 0 errors, 0 warnings. (took 272ms)
+16:33:15 Build Finished. 0 errors, 4 warnings. (took 1s.757ms)
 

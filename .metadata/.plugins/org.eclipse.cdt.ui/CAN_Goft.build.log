@@ -1,10 +1,10 @@
-17:43:42 **** Incremental Build of configuration Debug for project CAN_Goft ****
+13:23:49 **** Incremental Build of configuration Debug for project CAN_Goft ****
 make -j8 all 
 arm-none-eabi-size   CAN_Goft.elf 
    text	   data	    bss	    dec	    hex	filename
-   8692	     20	   1684	  10396	   289c	CAN_Goft.elf
+  12892	    100	   2012	  15004	   3a9c	CAN_Goft.elf
 Finished building: default.size.stdout
  
 
-17:43:43 Build Finished. 0 errors, 0 warnings. (took 293ms)
+13:23:49 Build Finished. 0 errors, 0 warnings. (took 287ms)
 

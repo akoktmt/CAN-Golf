@@ -5,18 +5,18 @@
 #include <stdlib.h>
 extern CAN_HandleTypeDef hcan;
 
-void CAN_Monitor_Flow(FlagRecNotification *FlagNoti,FlagFrameHandle *FlagHandle) {
-	if(*FlagNoti==REC_FRAMEDATA_ERROR){
-			for(uint8_t FrameType=0; FrameType<FlagHandle->NumberOfFrame;FrameType++)
-			{
-				if(FlagHandle->FlagID[FlagHandle->ID].FrameError[FrameType]==1)
-				{
-					CAN_Send_Response(FlagHandle->ID,FRAME_ERROR,FrameType);
-				}
+void CAN_Receive_Error_Handle(FlagRecNotification *FlagNoti,
+		FlagFrameHandle *FlagHandle) {
+	if (*FlagNoti == REC_FRAMEDATA_ERROR) {
+		for (uint8_t FrameType = 0; FrameType < FlagHandle->NumberOfFrame;
+				FrameType++) {
+			if (FlagHandle->FlagID[FlagHandle->ID].FrameError[FrameType] == 1) {
+				CAN_Send_Response(FlagHandle->ID, FRAME_ERROR, FrameType);
 			}
+		}
 	}
-	if(*FlagNoti==REC_PACKET_ERROR){
-			CAN_Send_Response(FlagHandle->ID,PACKET_ERROR,0x55);
+	if (*FlagNoti == REC_PACKET_ERROR) {
+		CAN_Send_Response(FlagHandle->ID, PACKET_ERROR, 0x55);
 
 	}
 }
@@ -37,33 +37,36 @@ uint16_t CAN_Send_Response(uint8_t ID, uint8_t Opcode, uint8_t FrameType) {
 	return HAL_OK;
 }
 
-void CAN_Receive_Response(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data)
-{
-	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO1) == 0)
-			;
-		if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO1, RxHeader, Data) != HAL_OK) {
-			Error_Handler(); //get message from RAM;
+void CAN_Receive_Response(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
+	uint8_t GetLevel=HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0);
+	if(GetLevel>0)
+	{
+		if(HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, RxHeader, Data)!=HAL_OK)
+		{
+			Error_Handler();
 		}
-}
-void CAN_Handle_Receive_Flow(CANBufferHandleStruct *Buffer ,CANConfigIDTxtypedef *pIDType,CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data)
-{
-	CAN_TxHeaderTypeDef TxHeader;
-	uint32_t Txmailbox;
-	CAN_Receive_Response(RxHeader,Data);
-	uint8_t StId=0;
-	StId = (StId << 3) | Buffer->FrameType_Index;
-	StId= (Buffer->SenderID <<3)|Data[1];
-	if(Data[0]==FRAME_ERROR)
-	{
-		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader,Buffer->Buffer[Data[1]] , &Txmailbox)
-					!= HAL_OK) {
-				Error_Handler();
-			}
-			while (HAL_CAN_IsTxMessagePending(&hcan, Txmailbox))
-				;
 	}
-	if(Data[0]==PACKET_ERROR)
-	{
+}
+void CAN_Send_Error_Handle(CANBufferHandleStruct *Buffer,
+		CANConfigIDTxtypedef *pIDType) {
+	uint8_t Data[8] = { 0 };
+	CAN_TxHeaderTypeDef TxHeader;
+	CAN_RxHeaderTypeDef RxHeader;
+	uint32_t Txmailbox;
+	CAN_Receive_Response(&RxHeader, Data);
+	uint8_t StId = 0;
+	StId = (StId << 3) | Buffer->FrameType_Index;
+	StId = (Buffer->SenderID << 3) | Data[1];
+	CAN_TXHeaderConfig(&TxHeader, StId);
+	if (Data[0] == FRAME_ERROR) {
+		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, Buffer->Buffer[Data[1]],
+				&Txmailbox) != HAL_OK) {
+			Error_Handler();
+		}
+		while (HAL_CAN_IsTxMessagePending(&hcan, Txmailbox))
+			;
+	}
+	if (Data[0] == PACKET_ERROR) {
 		CAN_Send_Physical_Send(Buffer, Data, pIDType);
 	}
 }
@@ -95,8 +98,10 @@ void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID,
 					FrameType++) {
 				if (FlagHandle->FlagID[ID].FlagFrameFull[FrameType] == 0) {
 					FlagHandle->FlagID[ID].FrameError[FrameType] = 1;
-					FlagHandle->ID=ID;
-					FlagHandle->NumberOfFrame=RxBuffer->NodeHandle[ID].NumberOfFrame;
+					FlagHandle->ID = ID;
+					FlagHandle->NumberOfFrame =
+							RxBuffer->NodeHandle[ID].NumberOfFrame;
+					CAN_Receive_Error_Handle(FlagRecHandle, FlagHandle);
 				}
 			}
 		}
@@ -110,6 +115,7 @@ void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		memcpy(
 				RxBuffer->NodeHandle[ID].NodeBuffer[RxBuffer->NodeHandle[ID].FrameType],
 				Data, CAN_MAX_DATA);
+
 		FlagHandle->FlagID[ID].FlagFrameFull[FrameType] = 1;
 		FlagHandle->FlagID[ID].SumOfFlag +=
 				FlagHandle->FlagID[ID].FlagFrameFull[FrameType];
@@ -173,12 +179,11 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 
 	StdId |= Message_ID;
 	StdId = (StdId << 4) | Sender_ID;
-	TxBuffer->SenderID=StdId;
+	TxBuffer->SenderID = StdId;
 	StdId = (StdId << 3) | TxBuffer->FrameType_Index;
 	Txheader.DLC = 8;
 	Txheader.RTR = CAN_RTR_DATA;
 	Txheader.IDE = CAN_ID_STD;
-
 
 	for (int8_t i = NumberOfFrame - 1; i >= 0; i--) {
 		Txheader.StdId = StdId;
@@ -197,23 +202,13 @@ uint8_t CAN_Send_Physical_Send(CANBufferHandleStruct *TxBuffer, uint8_t *Data,
 	return HAL_OK;
 }
 
-uint8_t CAN_Recieve_Physical_FIFO0(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
+void CAN_Recieve_Physical_FIFO0(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
 
 	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) == 0)
 		;
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, RxHeader, Data) != HAL_OK) {
 		Error_Handler(); //get message from RAM;
 	}
-	return HAL_OK;
-}
-
-uint8_t CAN_Recieve_Physical_FIFO1(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) {
-	while (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO1) == 0)
-		;
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO1, RxHeader, Data) != HAL_OK) {
-		Error_Handler(); //get message from RAM;
-	}
-	return HAL_OK;
 }
 
 uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle,
@@ -223,7 +218,6 @@ uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle,
 	uint8_t DataPhysical[CAN_MAX_DATA] = { 0 }; // init local DataPhysical for get data from receive
 	uint16_t StdID = 0;
 	uint8_t ID = 0;
-
 	CAN_Recieve_Physical_FIFO0(&RxHeader, DataPhysical);
 	//CAN_Recieve_Physical_FIFO1(&RxHeader,DataPhysical);
 	StdID = RxHeader.StdId;
@@ -247,6 +241,7 @@ uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle,
 			*FlagNotiHandle = REC_FRAMEDATA_ERROR;
 			FlagHandle->FlagID[ID].FrameError[RxBuffer->NodeHandle[ID].FrameType] =
 					1;
+			CAN_Receive_Error_Handle(FlagNotiHandle, FlagHandle);
 		}
 	}
 	CAN_ProcessRxBuffer(FlagHandle, ID, RxBuffer, DataPhysical, FlagNotiHandle);
@@ -287,6 +282,7 @@ uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 			memcpy(NetBuffer->NetworkBuffer, NetData, DataLength);
 		} else {
 			*FlagNotiHandle = REC_PACKET_ERROR;
+			CAN_Receive_Error_Handle(FlagNotiHandle, NetworkFlag);
 		}
 		free(NetData);
 	}
@@ -300,7 +296,7 @@ uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer, uint8_t *Data,
 	CAN_Receive_Network(AppBuffer, FlagFrame, FlagNotification);
 	if (*FlagNotification == REC_PACKET_SUCCESS) {
 		memcpy(Data, AppBuffer->NetworkBuffer, AppDataLength);
-		*FlagNotification =REC_SUCCESS;
+		*FlagNotification = REC_SUCCESS;
 	}
 	return HAL_OK;
 }
@@ -321,3 +317,11 @@ uint32_t CAN_Config_filtering(uint8_t FIFO) {
 	}
 	return HAL_OK;
 }
+//void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+//{
+//	CAN_RxHeaderTypeDef RxHeader;
+//	uint8_t Data[8]={0};
+//	if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, Data) != HAL_OK) {
+//				Error_Handler(); //get message from RAM;
+//			}
+//}
