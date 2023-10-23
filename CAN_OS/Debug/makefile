@@ -66,8 +66,8 @@ all: main-build
 main-build: CAN_OS.elf secondary-outputs
 
 # Tool invocations
-CAN_OS.elf CAN_OS.map: $(OBJS) $(USER_OBJS) D:\CAN_Workspace\CAN_OS\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\CAN_Workspace\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+CAN_OS.elf CAN_OS.map: $(OBJS) $(USER_OBJS) D:\Embedded\ Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

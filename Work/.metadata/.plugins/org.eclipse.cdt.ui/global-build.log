@@ -1,0 +1,180 @@
+22:52:45 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+../Core/Src/freertos.c:152:12: warning: variable 'len' set but not used [-Wunused-but-set-variable]
+  152 |   uint32_t len = 0;
+      |            ^~~
+../Core/Src/freertos.c:148:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
+  148 |   CANConfigIDTxtypedef pIDtype;
+      |                        ^~~~~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+../Core/Src/freertos.c:52:40: warning: 'Tx_Buffer' defined but not used [-Wunused-variable]
+   52 | static CANBufferHandleStruct Rx_Buffer,Tx_Buffer;
+      |                                        ^~~~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  29740	    104	  10488	  40332	   9d8c	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+22:53:01 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+../Core/Src/freertos.c:152:12: warning: variable 'len' set but not used [-Wunused-but-set-variable]
+  152 |   uint32_t len = 0;
+      |            ^~~
+../Core/Src/freertos.c:148:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
+  148 |   CANConfigIDTxtypedef pIDtype;
+      |                        ^~~~~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+../Core/Src/freertos.c:52:40: warning: 'Tx_Buffer' defined but not used [-Wunused-variable]
+   52 | static CANBufferHandleStruct Rx_Buffer,Tx_Buffer;
+      |                                        ^~~~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  29676	    104	  10488	  40268	   9d4c	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+22:54:20 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  29676	    104	  10488	  40268	   9d4c	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+22:55:09 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+../Core/Src/freertos.c:152:12: warning: variable 'len' set but not used [-Wunused-but-set-variable]
+  152 |   uint32_t len = 0;
+      |            ^~~
+../Core/Src/freertos.c:148:24: warning: variable 'pIDtype' set but not used [-Wunused-but-set-variable]
+  148 |   CANConfigIDTxtypedef pIDtype;
+      |                        ^~~~~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+../Core/Src/freertos.c:52:40: warning: 'Tx_Buffer' defined but not used [-Wunused-variable]
+   52 | static CANBufferHandleStruct Rx_Buffer,Tx_Buffer;
+      |                                        ^~~~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  29664	    104	  10488	  40256	   9d40	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+22:56:05 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+../Core/Src/freertos.c:53:24: warning: 'Flag' defined but not used [-Wunused-variable]
+   53 | static FlagFrameHandle Flag;
+      |                        ^~~~
+../Core/Src/freertos.c:52:30: warning: 'Rx_Buffer' defined but not used [-Wunused-variable]
+   52 | static CANBufferHandleStruct Rx_Buffer,Tx_Buffer;
+      |                              ^~~~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  27408	    104	  10216	  37728	   9360	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+22:56:47 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  30368	    104	  11832	  42304	   a540	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 
+23:00:01 **** Incremental Build of configuration Debug for project CAN_OS ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/freertos.o"
+arm-none-eabi-gcc "../CANlibrary/CAN_OSI.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xB -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -I../CRC -I../CANlibrary -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"CANlibrary/CAN_OSI.d" -MT"CANlibrary/CAN_OSI.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "CANlibrary/CAN_OSI.o"
+../Core/Src/freertos.c: In function 'MainTask':
+../Core/Src/freertos.c:154:11: warning: unused variable 'Data' [-Wunused-variable]
+  154 |   uint8_t Data[64];
+      |           ^~~~
+At top level:
+../Core/Src/freertos.c:54:29: warning: 'pIDtype' defined but not used [-Wunused-variable]
+   54 | static CANConfigIDTxtypedef pIDtype;
+      |                             ^~~~~~~
+arm-none-eabi-gcc -o "CAN_OS.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Embedded Learning\CAN-Golf-master\CAN_OS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_OS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: CAN_OS.elf
+ 
+arm-none-eabi-size   CAN_OS.elf 
+arm-none-eabi-objdump -h -S  CAN_OS.elf  > "CAN_OS.list"
+   text	   data	    bss	    dec	    hex	filename
+  30448	    104	  11832	  42384	   a590	CAN_OS.elf
+Finished building: default.size.stdout
+ 
+Finished building: CAN_OS.list
+ 

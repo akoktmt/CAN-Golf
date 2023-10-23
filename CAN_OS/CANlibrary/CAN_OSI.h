@@ -103,7 +103,7 @@ uint8_t CAN_Receive_DataLink(FlagFrameHandle *FlagHandle, CANBufferHandleStruct 
 uint8_t CAN_Receive_Application(CANBufferHandleStruct *AppBuffer,uint8_t *Data,FlagFrameHandle *FlagFrame ,FlagRecNotification *FlagNotification);
 uint8_t CAN_Receive_Network(CANBufferHandleStruct *NetBuffer,
 		FlagFrameHandle *NetworkFlag,FlagRecNotification *FlagNotiHandle);
-uint8_t CAN_Recieve_Physical_FIFO0(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data);
+void CAN_Recieve_Physical_FIFO0(CAN_RxHeaderTypeDef *RxHeader, uint8_t *Data) ;
 void CAN_ProcessRxBuffer(FlagFrameHandle *FlagHandle, uint8_t ID ,CANBufferHandleStruct *RxBuffer, uint8_t *DataPhysical, FlagRecNotification *FlagRecHandle);
 void CAN_ProcessFrame(FlagFrameHandle *FlagHandle, uint8_t ID,
 		CANBufferHandleStruct *RxBuffer, uint8_t FrameType, uint8_t *Data);

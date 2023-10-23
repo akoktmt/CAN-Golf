@@ -3,6 +3,7 @@
 "./CANlibrary/CAN_Process.o"
 "./CRC/CRC.o"
 "./Core/Src/can.o"
+"./Core/Src/dma.o"
 "./Core/Src/freertos.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"

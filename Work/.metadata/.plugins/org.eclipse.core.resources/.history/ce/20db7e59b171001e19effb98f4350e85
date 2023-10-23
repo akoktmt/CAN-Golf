@@ -1,0 +1,188 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * File Name          : freertos.c
+ * Description        : Code for freertos applications
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include "CAN_OSI.h"
+#include "CAN_Flag.h"
+#include "usart.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+extern CAN_HandleTypeDef hcan;
+static CANBufferHandleStruct Rx_Buffer,Tx_Buffer;
+static FlagFrameHandle Flag;
+static CANConfigIDTxtypedef pIDtype;
+/* USER CODE END Variables */
+/* Definitions for mMainTask */
+osThreadId_t mMainTaskHandle;
+const osThreadAttr_t mMainTask_attributes = {
+  .name = "mMainTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for mCanRecv */
+osThreadId_t mCanRecvHandle;
+const osThreadAttr_t mCanRecv_attributes = {
+  .name = "mCanRecv",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+
+/* USER CODE END FunctionPrototypes */
+
+void MainTask(void *argument);
+void CanRecv(void *argument);
+
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/**
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of mMainTask */
+  mMainTaskHandle = osThreadNew(MainTask, NULL, &mMainTask_attributes);
+
+  /* creation of mCanRecv */
+  mCanRecvHandle = osThreadNew(CanRecv, NULL, &mCanRecv_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+
+}
+
+/* USER CODE BEGIN Header_MainTask */
+/**
+ * @brief  Function implementing the mMainTask thread.
+ * @param  argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_MainTask */
+void MainTask(void *argument)
+{
+  /* USER CODE BEGIN MainTask */
+  CANConfigIDTxtypedef pIDtype;
+  pIDtype.MessageType = ALL_NODE;
+  pIDtype.SenderID = OBSTALCE5;
+  uint8_t sendData[100] = { 0 };
+  uint32_t len = 0;
+  uint32_t cnt = 0;
+  uint8_t Data[64];
+  for(int i=0;i<8;i++)
+  {
+    Data[i]=0x55;
+  }
+//  /* Infinite loop */
+  for (;;) {
+//    cnt++;
+//    Data[0]=cnt>>8;
+//    Data[1]=cnt& 0xFF;
+    len = sprintf((char*) sendData, "Send From OBSTALCE6 to MASTER: %lu\r\n", cnt++);
+   CAN_Send_Application(&Tx_Buffer, &pIDtype, Data, len+1);
+    //printf("AAA\n\r");
+    osDelay(1);
+  }
+  /* USER CODE END MainTask */
+}
+
+/* USER CODE BEGIN Header_CanRecv */
+/**
+ * @brief Function implementing the mCanRecv thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_CanRecv */
+void CanRecv(void *argument)
+{
+  /* USER CODE BEGIN CanRecv */
+  uint8_t mess[50]={0};
+  char Print[100]={0};
+  FlagRecNotification FlagRec;
+  /* Infinite loop */
+  for (;;) {
+    CAN_Receive_Application(&Rx_Buffer, mess, &Flag, &FlagRec);
+      if(FlagRec==REC_SUCCESS)
+      {
+       uint32_t len = sprintf(Print, "Node 2 Rcv: %s\r\n", mess);
+        HAL_UART_Transmit(&huart1,(uint8_t*)Print,len,HAL_MAX_DELAY);
+      }
+    osDelay(1);
+  }
+  /* USER CODE END CanRecv */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+
+/* USER CODE END Application */
+
