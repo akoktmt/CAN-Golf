@@ -1,8 +1,10 @@
 # CAN-Golf
 Overview
+
 This project focuses on building the Controller Area Network (CAN) layers, including the physical layer, data link layer, network layer, and application layer. The codebase implements communication functionalities over the CAN protocol, allowing for seamless communication between nodes in a CAN network. The project supports the transmission of multiple frames consecutively.
 
 Code Structure
+
 The codebase is organized into several files, each serving a specific purpose:
 
 1. CAN_OSI.c and CAN_OSI.h
